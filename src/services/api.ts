@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import { toast } from 'sonner';
 
@@ -33,6 +34,16 @@ api.interceptors.response.use(
     // More specific error handling
     if (error.code === 'ERR_NETWORK') {
       toast.error('Network error - Please check if the backend server is running');
+    } else if (error.response?.status === 400) {
+      // Handle validation errors
+      const errors = error.response?.data?.errors;
+      if (errors && Array.isArray(errors)) {
+        errors.forEach(err => {
+          toast.error(`Validation error: ${err.msg}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message || 'Form validation failed');
+      }
     } else {
       const message = error.response?.data?.message || 'An error occurred';
       toast.error(message);

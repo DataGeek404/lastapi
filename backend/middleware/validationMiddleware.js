@@ -22,11 +22,11 @@ const contactValidationRules = {
   ]
 };
 
+// Updated validation rules to match frontend form fields
 const joinUsValidationRules = {
   joinUs: [
     check('name', 'Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
-    check('phone', 'Phone number is required').not().isEmpty(),
     check('role', 'Role is required').not().isEmpty(),
     check('experience', 'Experience is required').not().isEmpty(),
     check('motivation', 'Motivation is required').not().isEmpty()

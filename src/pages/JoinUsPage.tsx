@@ -11,10 +11,9 @@ const JoinUsPage = () => {
     name: '',
     email: '',
     phone: '',
-    interest: 'volunteer',
-    skills: '',
+    role: 'volunteer',
     experience: '',
-    message: '',
+    motivation: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -27,7 +26,6 @@ const JoinUsPage = () => {
     setIsLoading(true);
 
     try {
-      // Actually call the API instead of just logging
       await joinUsApi.submitApplication(formData);
       console.log('Application submitted:', formData);
       
@@ -36,10 +34,9 @@ const JoinUsPage = () => {
         name: '',
         email: '',
         phone: '',
-        interest: 'volunteer',
-        skills: '',
+        role: 'volunteer',
         experience: '',
-        message: '',
+        motivation: '',
       });
     } catch (error) {
       console.error('Error submitting application:', error);
@@ -193,13 +190,13 @@ const JoinUsPage = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="interest" className="mb-1 block text-sm font-medium">
+              <label htmlFor="role" className="mb-1 block text-sm font-medium">
                 I'm Interested In*
               </label>
               <select
-                id="interest"
-                name="interest"
-                value={formData.interest}
+                id="role"
+                name="role"
+                value={formData.role}
                 onChange={handleChange}
                 required
                 className="w-full rounded-md border border-input bg-background px-3 py-2"
@@ -212,23 +209,8 @@ const JoinUsPage = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="skills" className="mb-1 block text-sm font-medium">
-                Skills & Expertise
-              </label>
-              <input
-                type="text"
-                id="skills"
-                name="skills"
-                value={formData.skills}
-                onChange={handleChange}
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-                placeholder="e.g., Project Management, Graphic Design, Data Analysis"
-              />
-            </div>
-
-            <div className="mb-4">
               <label htmlFor="experience" className="mb-1 block text-sm font-medium">
-                Relevant Experience
+                Relevant Experience*
               </label>
               <textarea
                 id="experience"
@@ -238,17 +220,18 @@ const JoinUsPage = () => {
                 rows={3}
                 className="w-full rounded-md border border-input bg-background px-3 py-2"
                 placeholder="Briefly describe any relevant experience or qualifications"
+                required
               ></textarea>
             </div>
 
             <div className="mb-6">
-              <label htmlFor="message" className="mb-1 block text-sm font-medium">
+              <label htmlFor="motivation" className="mb-1 block text-sm font-medium">
                 Why do you want to join us?*
               </label>
               <textarea
-                id="message"
-                name="message"
-                value={formData.message}
+                id="motivation"
+                name="motivation"
+                value={formData.motivation}
                 onChange={handleChange}
                 required
                 rows={4}
