@@ -1,6 +1,7 @@
 
 const { check } = require('express-validator');
 
+
 const userValidationRules = {
   register: [
     check('name', 'Name is required').not().isEmpty(),
