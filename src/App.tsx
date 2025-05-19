@@ -15,6 +15,7 @@ import JoinUsPage from "@/pages/JoinUsPage";
 import SupportUsPage from "@/pages/SupportUsPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 
+
 const queryClient = new QueryClient();
 
 const App = () => (

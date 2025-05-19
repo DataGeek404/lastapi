@@ -14,6 +14,7 @@ const ApproachPage = () => {
         'Synthesis of findings and recommendations',
       ],
     },
+    
     {
       title: 'Collaborative Design',
       description: 'We work closely with communities and stakeholders to co-create solutions that meet real needs.',
@@ -24,6 +25,7 @@ const ApproachPage = () => {
         'Iterative refinement based on feedback',
       ],
     },
+    
     {
       title: 'Implementation & Support',
       description: 'We provide resources, training, and ongoing support to ensure successful implementation.',

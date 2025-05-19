@@ -6,6 +6,7 @@ import Button from '@/components/shared/Button';
 const HomePage = () => {
   return (
     <>
+    
       {/* Hero Section */}
       <section className="hero-section">
         <div className="container text-center">
