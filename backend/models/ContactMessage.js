@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const contactMessageSchema = new mongoose.Schema({
