@@ -23,11 +23,27 @@ const pool = mysql.createPool({
 // Make the pool accessible to other modules
 app.locals.db = pool;
 
-// Middlewares
+// CORS Configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://192.168.0.105:8080'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like curl, Postman) or matching frontend
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Middleware
 app.use(express.json());
 
 // Define routes
@@ -61,11 +77,11 @@ async function initialize() {
     const connection = await pool.getConnection();
     console.log('MySQL connected successfully');
     connection.release();
-    
+
     // Start the server
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://0.0.0.0:${PORT}`);
     });
   } catch (err) {
     console.error('MySQL connection error:', err.message);
