@@ -44,6 +44,9 @@ api.interceptors.response.use(
       } else {
         toast.error(error.response?.data?.message || 'Form validation failed');
       }
+    } else if (error.response?.status === 500 && error.response?.data?.message) {
+      // Handle server errors with messages
+      toast.error(`Server error: ${error.response.data.message}`);
     } else {
       const message = error.response?.data?.message || 'An error occurred';
       toast.error(message);
@@ -68,7 +71,12 @@ export const donationApi = {
     } else if (paymentMethod === 'paypal') {
       return api.post('/api/donations/paypal', data);
     } else if (paymentMethod === 'mpesa') {
-      return api.post('/api/donations/mpesa', data);
+      // Format phone number before sending to backend
+      const formattedData = {
+        ...data,
+        phoneNumber: formatMpesaPhoneNumber(data.phoneNumber)
+      };
+      return api.post('/api/donations/mpesa', formattedData);
     } else {
       // For visa and mastercard
       return api.post('/api/donations/card', { ...data, cardType: paymentMethod });
@@ -77,6 +85,24 @@ export const donationApi = {
   getPaymentMethods: () => api.get('/api/payment-methods'),
   getDonationStatus: (id: string) => api.get(`/api/donations/${id}`),
 };
+
+// Helper function to format phone number for M-Pesa
+function formatMpesaPhoneNumber(phoneNumber: string): string {
+  // Remove any non-digit characters
+  const digitsOnly = phoneNumber.replace(/\D/g, '');
+  
+  // If the number starts with '0', replace with '254'
+  if (digitsOnly.startsWith('0')) {
+    return '254' + digitsOnly.substring(1);
+  }
+  
+  // If the number doesn't start with '254', add it
+  if (!digitsOnly.startsWith('254')) {
+    return '254' + digitsOnly;
+  }
+  
+  return digitsOnly;
+}
 
 export const userApi = {
   register: (data: any) => api.post('/api/users/register', data),

@@ -1,3 +1,6 @@
+<think>
+
+</think>
 
 import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
@@ -7,7 +10,7 @@ import { toast } from 'sonner';
 import { donationApi } from '@/services/api';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, CreditCard, Bitcoin, DollarSign } from "lucide-react";
+import { CheckCircle, CreditCard, Bitcoin, DollarSign, Smartphone } from "lucide-react";
 
 // Types
 interface PaymentMethod {
@@ -141,26 +144,42 @@ const SupportUsPage = () => {
       const response = await donationApi.processDonation(donationData, paymentMethod);
       console.log('Donation response:', response.data);
 
-      toast.success('Thank you for your donation!');
-      // Reset form after successful donation
-      setDonationAmount('');
-      setCustomAmount('');
-      setPaymentMethod('');
-      setDonorInfo({
-        name: '',
-        email: '',
-        address: '',
-        city: '',
-        country: '',
-        phoneNumber: '',
-        anonymous: false,
-      });
+      if (paymentMethod === 'mpesa' && response.data.checkoutRequestId) {
+        // Show M-Pesa instructions
+        setMpesaCheckoutId(response.data.checkoutRequestId);
+        setShowMpesaInstructions(true);
+        toast.success('M-Pesa payment request sent to your phone. Please check your phone to complete the payment.');
+      } else {
+        toast.success('Thank you for your donation!');
+        // Reset form after successful donation
+        resetForm();
+      }
     } catch (error) {
       console.error('Error processing donation:', error);
       toast.error('There was an error processing your donation. Please try again.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle showing M-Pesa instruction modal
+  const [showMpesaInstructions, setShowMpesaInstructions] = useState<boolean>(false);
+  const [mpesaCheckoutId, setMpesaCheckoutId] = useState<string>('');
+
+  // Helper function to reset the form
+  const resetForm = () => {
+    setDonationAmount('');
+    setCustomAmount('');
+    setPaymentMethod('');
+    setDonorInfo({
+      name: '',
+      email: '',
+      address: '',
+      city: '',
+      country: '',
+      phoneNumber: '',
+      anonymous: false,
+    });
   };
 
   // Helper function to render payment method icon
@@ -175,6 +194,7 @@ const SupportUsPage = () => {
       case 'paypal':
         return <DollarSign className="h-8 w-8" />;
       case 'mpesa':
+        return <Smartphone className="h-8 w-8" />;
       case 'bitcoin':
         return <Bitcoin className="h-8 w-8" />;
       default:
@@ -188,6 +208,33 @@ const SupportUsPage = () => {
         title="Support Our Mission" 
         subtitle="Your contribution helps us create lasting positive change in communities"
       />
+
+      {/* M-Pesa Instructions Modal */}
+      {showMpesaInstructions && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">Complete M-Pesa Payment</h3>
+            <p className="mb-4">A payment request has been sent to your phone. Please follow these steps:</p>
+            <ol className="list-decimal pl-5 mb-4">
+              <li className="mb-2">Check your phone for an M-Pesa STK push notification</li>
+              <li className="mb-2">Enter your M-Pesa PIN when prompted</li>
+              <li className="mb-2">Wait for confirmation message from M-Pesa</li>
+            </ol>
+            <p className="text-sm mb-4">Transaction ID: {mpesaCheckoutId}</p>
+            <div className="flex justify-end">
+              <button 
+                onClick={() => {
+                  setShowMpesaInstructions(false);
+                  resetForm();
+                }}
+                className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <section className="section container-narrow">
         <div className="mb-16">

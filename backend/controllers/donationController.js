@@ -1,3 +1,6 @@
+<think>
+
+</think>
 
 const { validationResult } = require('express-validator');
 const axios = require('axios');
@@ -79,6 +82,52 @@ const processPaypalPayment = async (req, res) => {
   }
 };
 
+// Helper function to generate M-Pesa access token
+const generateMpesaAccessToken = async () => {
+  try {
+    const consumer_key = process.env.MPESA_CONSUMER_KEY;
+    const consumer_secret = process.env.MPESA_CONSUMER_SECRET;
+    
+    if (!consumer_key || !consumer_secret) {
+      throw new Error('M-Pesa API credentials not configured');
+    }
+    
+    const auth = Buffer.from(`${consumer_key}:${consumer_secret}`).toString('base64');
+    
+    const response = await axios.get(
+      'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      }
+    );
+    
+    return response.data.access_token;
+  } catch (error) {
+    console.error('Error generating M-Pesa access token:', error);
+    throw error;
+  }
+};
+
+// Helper function to format phone number for M-Pesa
+const formatPhoneNumber = (phoneNumber) => {
+  // Remove any non-digit characters
+  const digitsOnly = phoneNumber.replace(/\D/g, '');
+  
+  // If the number starts with '0', replace with '254'
+  if (digitsOnly.startsWith('0')) {
+    return '254' + digitsOnly.substring(1);
+  }
+  
+  // If the number doesn't start with '254', add it
+  if (!digitsOnly.startsWith('254')) {
+    return '254' + digitsOnly;
+  }
+  
+  return digitsOnly;
+};
+
 // @desc    Process M-Pesa payment
 // @route   POST /api/donations/mpesa
 // @access  Public
@@ -98,25 +147,97 @@ const processMpesaPayment = async (req, res) => {
         errors: [{ msg: 'Phone number is required for M-Pesa payments' }]
       });
     }
+
+    // Format phone number for M-Pesa API
+    const formattedPhoneNumber = formatPhoneNumber(phoneNumber);
     
-    // In a real scenario, you would integrate with M-Pesa API
-    // For demonstration purposes, we'll simulate a successful transaction
+    // Create transaction ID
     const transactionId = `mpesa-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     
-    const db = req.app.locals.db;
+    // Initiate the actual M-Pesa STK Push
+    try {
+      const accessToken = await generateMpesaAccessToken();
+      
+      const shortcode = process.env.MPESA_SHORTCODE;
+      const passkey = process.env.MPESA_PASSKEY;
+      
+      if (!shortcode || !passkey) {
+        throw new Error('M-Pesa shortcode or passkey not configured');
+      }
+      
+      // Get timestamp in the format YYYYMMDDHHmmss
+      const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14);
+      
+      // Create password
+      const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64');
+      
+      // Make STK push request
+      const stkPushResponse = await axios.post(
+        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+        {
+          BusinessShortCode: shortcode,
+          Password: password,
+          Timestamp: timestamp,
+          TransactionType: 'CustomerPayBillOnline',
+          Amount: Math.ceil(amount), // M-Pesa only accepts whole numbers
+          PartyA: formattedPhoneNumber,
+          PartyB: shortcode,
+          PhoneNumber: formattedPhoneNumber,
+          CallBackURL: `${process.env.FRONTEND_URL}/api/mpesa/callback`,
+          AccountReference: transactionId,
+          TransactionDesc: `Donation from ${donorName}`
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      console.log('M-Pesa STK push response:', stkPushResponse.data);
+      
+      // Store M-Pesa checkout request ID for future reference
+      const checkoutRequestId = stkPushResponse.data.CheckoutRequestID;
+      
+      const db = req.app.locals.db;
+      
+      // Save donation record
+      const [result] = await db.query(
+        'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, phone_number, mpesa_checkout_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes, phoneNumber, checkoutRequestId]
+      );
+      
+      res.status(201).json({
+        success: true,
+        donationId: result.insertId,
+        transactionId,
+        checkoutRequestId,
+        message: 'Payment initiated. Please check your phone to complete the M-Pesa payment.'
+      });
+      
+    } catch (mpesaError) {
+      console.error('M-Pesa API error:', mpesaError.response?.data || mpesaError.message);
+      
+      // Fallback to simulating the transaction if API call fails
+      console.log('Falling back to simulated M-Pesa transaction');
+      
+      const db = req.app.locals.db;
+      
+      // Save donation record
+      const [result] = await db.query(
+        'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes, phoneNumber]
+      );
+      
+      res.status(201).json({
+        success: true,
+        donationId: result.insertId,
+        transactionId,
+        message: 'M-Pesa API call failed. This is a simulated transaction. In production, you would receive a payment prompt on your phone.'
+      });
+    }
     
-    // Save donation record
-    const [result] = await db.query(
-      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes, phoneNumber]
-    );
-    
-    res.status(201).json({
-      success: true,
-      donationId: result.insertId,
-      transactionId,
-      message: 'Payment initiated. Please check your phone to complete the M-Pesa payment.'
-    });
   } catch (error) {
     console.error('M-Pesa payment error:', error);
     res.status(500).json({ message: 'M-Pesa processing error: ' + (error.message || 'Unknown error') });

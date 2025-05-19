@@ -65,7 +65,7 @@ async function initializeDatabase() {
     `);
     console.log('Join applications table created or already exists');
 
-    // Create donations table with phone_number field for M-Pesa
+    // Create donations table with phone_number and mpesa_checkout_id fields
     await connection.query(`
       CREATE TABLE IF NOT EXISTS donations (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,6 +79,7 @@ async function initializeDatabase() {
         is_anonymous BOOLEAN DEFAULT FALSE,
         notes TEXT,
         phone_number VARCHAR(50),
+        mpesa_checkout_id VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
       )
