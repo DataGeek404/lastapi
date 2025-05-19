@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -31,12 +30,18 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/donations', require('./routes/donationRoutes'));
-app.use('/api/payment-methods', require('./routes/paymentMethodRoutes'));
-app.use('/api/contact', require('./routes/contactRoutes'));
-app.use('/api/join-us', require('./routes/joinUsRoutes'));
+// Define routes
+const contactRoutes = require('./routes/contactRoutes');
+const joinUsRoutes = require('./routes/joinUsRoutes');
+const userRoutes = require('./routes/userRoutes');
+const donationRoutes = require('./routes/donationRoutes');
+const paymentMethodRoutes = require('./routes/paymentMethodRoutes');
+
+app.use('/api/contact', contactRoutes);
+app.use('/api/join-us', joinUsRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/donations', donationRoutes);
+app.use('/api/payment-methods', paymentMethodRoutes);
 
 // Base route for testing
 app.get('/', (req, res) => {

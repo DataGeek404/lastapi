@@ -4,6 +4,9 @@ import Button from '@/components/shared/Button';
 import { useApp } from '@/contexts/AppContext';
 import { toast } from 'sonner';
 import { donationApi } from '@/services/api';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { CheckCircle } from "lucide-react";
 
 // Types
 interface PaymentMethod {
@@ -21,14 +24,6 @@ interface DonorInfo {
   country: string;
   anonymous: boolean;
 }
-
-const paymentLogos = {
-  visa: '/payment-logos/visa.svg',
-  mastercard: '/payment-logos/mastercard.svg',
-  stripe: '/payment-logos/stripe.svg',
-  paypal: '/payment-logos/paypal.svg',
-  mpesa: '/payment-logos/mpesa.svg',
-};
 
 const SupportUsPage = () => {
   const { isLoading, setIsLoading } = useApp();
@@ -126,6 +121,7 @@ const SupportUsPage = () => {
       console.log('Donation response:', response.data);
 
       toast.success('Thank you for your donation!');
+      // Reset form after successful donation
       setDonationAmount('');
       setCustomAmount('');
       setPaymentMethod('');
@@ -383,34 +379,67 @@ const SupportUsPage = () => {
             </div>
 
             <div className="mb-6">
-              <h3 className="mb-4">Select Payment Method</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4">
+              <h3 className="mb-4 font-medium">Select Payment Method</h3>
+              <RadioGroup 
+                value={paymentMethod} 
+                onValueChange={handlePaymentMethodSelect}
+                className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4"
+              >
                 {paymentMethods.map((method) => (
-                  <div
+                  <div 
                     key={method.id}
-                    onClick={() => method.enabled && handlePaymentMethodSelect(method.id)}
-                    className={`flex flex-col items-center justify-center rounded-lg border p-4 ${
-                      !method.enabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer transition-all'
-                    } ${
-                      paymentMethod === method.id
-                        ? 'border-primary bg-primary/10'
-                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                    }`}
+                    className={`relative flex flex-col items-center justify-center rounded-lg border p-4 transition-all
+                      ${!method.enabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                      ${paymentMethod === method.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
+                    `}
                   >
+                    {method.enabled && (
+                      <RadioGroupItem 
+                        value={method.id} 
+                        id={`payment-${method.id}`} 
+                        className="sr-only"
+                        disabled={!method.enabled}
+                      />
+                    )}
                     <div className="mb-2 h-10 w-full flex items-center justify-center text-brand-600">
-                      {/* Default icon if images are not available */}
-                      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                      </svg>
+                      <img 
+                        src={method.icon} 
+                        alt={method.name}
+                        className="h-8 w-auto object-contain"
+                        onError={(e) => {
+                          // Fallback to icon if image fails to load
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
+                      />
                     </div>
-                    <span className="text-sm font-medium capitalize">{method.name}</span>
+                    <Label 
+                      htmlFor={`payment-${method.id}`} 
+                      className="text-sm font-medium capitalize"
+                    >
+                      {method.name}
+                    </Label>
+                    {paymentMethod === method.id && (
+                      <div className="absolute top-2 right-2 text-primary">
+                        <CheckCircle className="h-5 w-5" />
+                      </div>
+                    )}
                   </div>
                 ))}
-              </div>
+              </RadioGroup>
+              {!paymentMethod && donationAmount && (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Please select a payment method to continue
+                </p>
+              )}
             </div>
 
             <div className="text-center">
-              <Button type="submit" size="lg" isLoading={isLoading}>
+              <Button 
+                type="submit" 
+                size="lg" 
+                isLoading={isLoading}
+                disabled={!paymentMethod || !donationAmount || (donationAmount === 'custom' && !customAmount)}
+              >
                 Complete Donation
               </Button>
               <p className="mt-4 text-xs text-muted-foreground">
