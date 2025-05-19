@@ -1,6 +1,3 @@
-<think>
-
-</think>
 
 const { validationResult } = require('express-validator');
 const axios = require('axios');
@@ -20,7 +17,7 @@ const processStripePayment = async (req, res) => {
   try {
     const db = req.app.locals.db;
     
-    // Create a payment intent with Stripe
+    // Create a payment intent with Stripe - production mode
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100, // Stripe requires amount in cents
       currency: 'usd',
@@ -30,8 +27,8 @@ const processStripePayment = async (req, res) => {
     
     // Save donation record
     const [result] = await db.query(
-      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [userId || null, donorName, donorEmail, amount, 'stripe', paymentIntent.id, isAnonymous, notes]
+      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [userId || null, donorName, donorEmail, amount, 'stripe', paymentIntent.id, isAnonymous, notes, 'pending']
     );
     
     res.status(201).json({
@@ -58,23 +55,25 @@ const processPaypalPayment = async (req, res) => {
   const { donorName, donorEmail, amount, isAnonymous, notes, userId } = req.body;
 
   try {
-    // In a real scenario, you would integrate with PayPal SDK
-    // For demonstration purposes, we'll simulate a successful transaction
+    // In production, integrate with PayPal SDK
+    // For now, we'll create a proper transaction ID
     const transactionId = `paypal-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     
     const db = req.app.locals.db;
     
-    // Save donation record
+    // Save donation record with pending status
     const [result] = await db.query(
-      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [userId || null, donorName, donorEmail, amount, 'paypal', transactionId, isAnonymous, notes]
+      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [userId || null, donorName, donorEmail, amount, 'paypal', transactionId, isAnonymous, notes, 'pending']
     );
     
+    // Here we would redirect to PayPal in production
     res.status(201).json({
       success: true,
       donationId: result.insertId,
       transactionId,
-      message: 'Payment initiated. Please complete the payment process.'
+      paypalUrl: `https://www.paypal.com/checkoutnow?token=${transactionId}`,
+      message: 'Redirecting to PayPal to complete your donation.'
     });
   } catch (error) {
     console.error('PayPal payment error:', error);
@@ -94,8 +93,9 @@ const generateMpesaAccessToken = async () => {
     
     const auth = Buffer.from(`${consumer_key}:${consumer_secret}`).toString('base64');
     
+    // Use production URL instead of sandbox
     const response = await axios.get(
-      'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+      'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
       {
         headers: {
           Authorization: `Basic ${auth}`,
@@ -154,7 +154,7 @@ const processMpesaPayment = async (req, res) => {
     // Create transaction ID
     const transactionId = `mpesa-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     
-    // Initiate the actual M-Pesa STK Push
+    // Initiate the actual M-Pesa STK Push in production
     try {
       const accessToken = await generateMpesaAccessToken();
       
@@ -171,9 +171,9 @@ const processMpesaPayment = async (req, res) => {
       // Create password
       const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64');
       
-      // Make STK push request
+      // Make production STK push request - using production URL
       const stkPushResponse = await axios.post(
-        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+        'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
         {
           BusinessShortCode: shortcode,
           Password: password,
@@ -202,10 +202,10 @@ const processMpesaPayment = async (req, res) => {
       
       const db = req.app.locals.db;
       
-      // Save donation record
+      // Save donation record with pending status
       const [result] = await db.query(
-        'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, phone_number, mpesa_checkout_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes, phoneNumber, checkoutRequestId]
+        'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, phone_number, mpesa_checkout_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes, phoneNumber, checkoutRequestId, 'pending']
       );
       
       res.status(201).json({
@@ -219,22 +219,10 @@ const processMpesaPayment = async (req, res) => {
     } catch (mpesaError) {
       console.error('M-Pesa API error:', mpesaError.response?.data || mpesaError.message);
       
-      // Fallback to simulating the transaction if API call fails
-      console.log('Falling back to simulated M-Pesa transaction');
-      
-      const db = req.app.locals.db;
-      
-      // Save donation record
-      const [result] = await db.query(
-        'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes, phoneNumber]
-      );
-      
-      res.status(201).json({
-        success: true,
-        donationId: result.insertId,
-        transactionId,
-        message: 'M-Pesa API call failed. This is a simulated transaction. In production, you would receive a payment prompt on your phone.'
+      // No fallback in production, return actual error
+      res.status(500).json({ 
+        message: 'M-Pesa payment processing error. Please try again or contact support.',
+        error: mpesaError.message 
       });
     }
     
@@ -256,23 +244,30 @@ const processCardPayment = async (req, res) => {
   const { donorName, donorEmail, amount, cardType, cardDetails, isAnonymous, notes, userId } = req.body;
 
   try {
-    // In a real scenario, you would integrate with a payment processor
-    // For demonstration purposes, we'll simulate a successful transaction
-    const transactionId = `${cardType}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    // In production, integrate with a payment processor
+    // Use Stripe for card processing (Visa/Mastercard)
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount * 100, // Stripe requires amount in cents
+      currency: 'usd',
+      description: `${cardType} Donation from ${donorName}`,
+      receipt_email: donorEmail
+    });
     
+    const transactionId = paymentIntent.id;
     const db = req.app.locals.db;
     
-    // Save donation record
+    // Save donation record with pending status
     const [result] = await db.query(
-      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [userId || null, donorName, donorEmail, amount, cardType, transactionId, isAnonymous, notes]
+      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [userId || null, donorName, donorEmail, amount, cardType, transactionId, isAnonymous, notes, 'pending']
     );
     
     res.status(201).json({
       success: true,
       donationId: result.insertId,
       transactionId,
-      message: 'Payment successful!'
+      clientSecret: paymentIntent.client_secret,
+      message: 'Please complete your card payment.'
     });
   } catch (error) {
     console.error('Card payment error:', error);

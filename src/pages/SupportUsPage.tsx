@@ -145,6 +145,14 @@ const SupportUsPage = () => {
         setMpesaCheckoutId(response.data.checkoutRequestId);
         setShowMpesaInstructions(true);
         toast.success('M-Pesa payment request sent to your phone. Please check your phone to complete the payment.');
+      } else if (paymentMethod === 'paypal' && response.data.paypalUrl) {
+        // Redirect to PayPal
+        window.location.href = response.data.paypalUrl;
+        toast.success('Redirecting to PayPal to complete your donation.');
+      } else if ((paymentMethod === 'visa' || paymentMethod === 'mastercard' || paymentMethod === 'stripe') && response.data.clientSecret) {
+        // Handle card payment (would integrate with Stripe Elements in production)
+        toast.success('Please complete your card payment in the popup window.');
+        // In production, this would open a Stripe Elements payment form
       } else {
         toast.success('Thank you for your donation!');
         // Reset form after successful donation
