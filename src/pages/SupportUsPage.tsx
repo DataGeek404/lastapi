@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/shared/Button';
@@ -7,7 +6,7 @@ import { toast } from 'sonner';
 import { donationApi } from '@/services/api';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, CreditCard, Paypal, Bitcoin, DollarSign } from "lucide-react";
+import { CheckCircle, CreditCard, Bitcoin, DollarSign } from "lucide-react";
 
 // Types
 interface PaymentMethod {
@@ -163,7 +162,7 @@ const SupportUsPage = () => {
       case 'stripe':
         return <DollarSign className="h-8 w-8" />;
       case 'paypal':
-        return <Paypal className="h-8 w-8" />;
+        return <DollarSign className="h-8 w-8" />;
       case 'mpesa':
       case 'bitcoin':
         return <Bitcoin className="h-8 w-8" />;
