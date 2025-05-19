@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 // Protect routes middleware
 const protect = async (req, res, next) => {
   let token;
+  
 
   // Check for token in headers
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
