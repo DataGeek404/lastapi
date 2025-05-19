@@ -1,7 +1,7 @@
-
 import axios from 'axios';
 import { toast } from 'sonner';
 
+// Use a variable that can be easily updated if needed
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
 const api = axios.create({
@@ -30,8 +30,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message = error.response?.data?.message || 'An error occurred';
-    toast.error(message);
+    // More specific error handling
+    if (error.code === 'ERR_NETWORK') {
+      toast.error('Network error - Please check if the backend server is running');
+    } else {
+      const message = error.response?.data?.message || 'An error occurred';
+      toast.error(message);
+    }
     return Promise.reject(error);
   }
 );
