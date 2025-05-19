@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 // Load environment variables
 dotenv.config();
 
+
 async function initializeDatabase() {
   try {
     // Create connection
