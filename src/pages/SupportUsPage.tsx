@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/shared/Button';
@@ -6,7 +7,7 @@ import { toast } from 'sonner';
 import { donationApi } from '@/services/api';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, CreditCard, Paypal, Bitcoin, DollarSign } from "lucide-react";
 
 // Types
 interface PaymentMethod {
@@ -24,6 +25,15 @@ interface DonorInfo {
   country: string;
   anonymous: boolean;
 }
+
+// Fallback payment methods to use if API call fails
+const fallbackPaymentMethods: PaymentMethod[] = [
+  { id: 'visa', name: 'Visa', icon: 'visa', enabled: true },
+  { id: 'mastercard', name: 'Mastercard', icon: 'mastercard', enabled: true },
+  { id: 'stripe', name: 'Stripe', icon: 'stripe', enabled: true },
+  { id: 'paypal', name: 'PayPal', icon: 'paypal', enabled: true },
+  { id: 'mpesa', name: 'M-Pesa', icon: 'mpesa', enabled: true }
+];
 
 const SupportUsPage = () => {
   const { isLoading, setIsLoading } = useApp();
@@ -49,7 +59,9 @@ const SupportUsPage = () => {
         setPaymentMethods(response.data);
       } catch (error) {
         console.error('Error fetching payment methods:', error);
-        toast.error('Failed to load payment methods');
+        toast.error('Failed to load payment methods. Using default options.');
+        // Use fallback payment methods if API call fails
+        setPaymentMethods(fallbackPaymentMethods);
       }
     };
 
@@ -138,6 +150,25 @@ const SupportUsPage = () => {
       toast.error('There was an error processing your donation. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Helper function to render payment method icon
+  const renderPaymentIcon = (methodId: string) => {
+    switch(methodId) {
+      case 'visa':
+        return <CreditCard className="h-8 w-8" />;
+      case 'mastercard':
+        return <CreditCard className="h-8 w-8" />;
+      case 'stripe':
+        return <DollarSign className="h-8 w-8" />;
+      case 'paypal':
+        return <Paypal className="h-8 w-8" />;
+      case 'mpesa':
+      case 'bitcoin':
+        return <Bitcoin className="h-8 w-8" />;
+      default:
+        return <CreditCard className="h-8 w-8" />;
     }
   };
 
@@ -380,52 +411,50 @@ const SupportUsPage = () => {
 
             <div className="mb-6">
               <h3 className="mb-4 font-medium">Select Payment Method</h3>
-              <RadioGroup 
-                value={paymentMethod} 
-                onValueChange={handlePaymentMethodSelect}
-                className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4"
-              >
-                {paymentMethods.map((method) => (
-                  <div 
-                    key={method.id}
-                    className={`relative flex flex-col items-center justify-center rounded-lg border p-4 transition-all
-                      ${!method.enabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                      ${paymentMethod === method.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
-                    `}
-                  >
-                    {method.enabled && (
-                      <RadioGroupItem 
-                        value={method.id} 
-                        id={`payment-${method.id}`} 
-                        className="sr-only"
-                        disabled={!method.enabled}
-                      />
-                    )}
-                    <div className="mb-2 h-10 w-full flex items-center justify-center text-brand-600">
-                      <img 
-                        src={method.icon} 
-                        alt={method.name}
-                        className="h-8 w-auto object-contain"
-                        onError={(e) => {
-                          // Fallback to icon if image fails to load
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
-                      />
-                    </div>
-                    <Label 
-                      htmlFor={`payment-${method.id}`} 
-                      className="text-sm font-medium capitalize"
+              {paymentMethods.length > 0 ? (
+                <RadioGroup 
+                  value={paymentMethod} 
+                  onValueChange={handlePaymentMethodSelect}
+                  className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4"
+                >
+                  {paymentMethods.map((method) => (
+                    <div 
+                      key={method.id}
+                      className={`relative flex flex-col items-center justify-center rounded-lg border p-4 transition-all
+                        ${!method.enabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                        ${paymentMethod === method.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
+                      `}
                     >
-                      {method.name}
-                    </Label>
-                    {paymentMethod === method.id && (
-                      <div className="absolute top-2 right-2 text-primary">
-                        <CheckCircle className="h-5 w-5" />
+                      {method.enabled && (
+                        <RadioGroupItem 
+                          value={method.id} 
+                          id={`payment-${method.id}`} 
+                          className="sr-only"
+                          disabled={!method.enabled}
+                        />
+                      )}
+                      <div className="mb-2 h-10 w-full flex items-center justify-center text-brand-600">
+                        {renderPaymentIcon(method.id)}
                       </div>
-                    )}
-                  </div>
-                ))}
-              </RadioGroup>
+                      <Label 
+                        htmlFor={`payment-${method.id}`} 
+                        className="text-sm font-medium capitalize"
+                      >
+                        {method.name}
+                      </Label>
+                      {paymentMethod === method.id && (
+                        <div className="absolute top-2 right-2 text-primary">
+                          <CheckCircle className="h-5 w-5" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </RadioGroup>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Loading payment methods...</p>
+                </div>
+              )}
               {!paymentMethod && donationAmount && (
                 <p className="mt-2 text-sm text-muted-foreground">
                   Please select a payment method to continue
