@@ -1,5 +1,4 @@
 
-const ContactMessage = require('../models/ContactMessage');
 const { validationResult } = require('express-validator');
 
 // @desc    Submit a contact form message
@@ -14,18 +13,16 @@ const submitContactForm = async (req, res) => {
   const { name, email, subject, message } = req.body;
   
   try {
-    const contactMessage = new ContactMessage({
-      name,
-      email,
-      subject,
-      message
-    });
+    const db = req.app.locals.db;
     
-    const savedMessage = await contactMessage.save();
+    const [result] = await db.query(
+      'INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)',
+      [name, email, subject, message]
+    );
     
     res.status(201).json({
       success: true,
-      messageId: savedMessage._id,
+      messageId: result.insertId,
       message: 'Your message has been received. We will get back to you soon.'
     });
   } catch (error) {
@@ -39,7 +36,12 @@ const submitContactForm = async (req, res) => {
 // @access  Private/Admin
 const getAllContactMessages = async (req, res) => {
   try {
-    const messages = await ContactMessage.find({}).sort({ submittedAt: -1 });
+    const db = req.app.locals.db;
+    
+    const [messages] = await db.query(
+      'SELECT * FROM contact_messages ORDER BY submitted_at DESC'
+    );
+    
     res.json(messages);
   } catch (error) {
     console.error('Get contact messages error:', error);
@@ -52,20 +54,27 @@ const getAllContactMessages = async (req, res) => {
 // @access  Private/Admin
 const updateContactMessageStatus = async (req, res) => {
   try {
-    const message = await ContactMessage.findById(req.params.id);
+    const db = req.app.locals.db;
+    const messageId = req.params.id;
+    const { status } = req.body;
     
-    if (!message) {
+    // Verify message exists
+    const [messages] = await db.query('SELECT * FROM contact_messages WHERE id = ?', [messageId]);
+    
+    if (messages.length === 0) {
       return res.status(404).json({ message: 'Message not found' });
     }
     
-    message.status = req.body.status;
-    
-    const updatedMessage = await message.save();
+    // Update message status
+    await db.query(
+      'UPDATE contact_messages SET status = ? WHERE id = ?',
+      [status, messageId]
+    );
     
     res.json({
       success: true,
-      id: updatedMessage._id,
-      status: updatedMessage.status
+      id: messageId,
+      status
     });
   } catch (error) {
     console.error('Update message status error:', error);

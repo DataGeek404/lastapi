@@ -1,11 +1,27 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/shared/Button';
 import { useApp } from '@/contexts/AppContext';
 import { toast } from 'sonner';
+import { donationApi } from '@/services/api';
 
-// Payment method logos
+// Types
+interface PaymentMethod {
+  id: string;
+  name: string;
+  icon: string;
+  enabled: boolean;
+}
+
+interface DonorInfo {
+  name: string;
+  email: string;
+  address: string;
+  city: string;
+  country: string;
+  anonymous: boolean;
+}
+
 const paymentLogos = {
   visa: '/payment-logos/visa.svg',
   mastercard: '/payment-logos/mastercard.svg',
@@ -19,7 +35,8 @@ const SupportUsPage = () => {
   const [donationAmount, setDonationAmount] = useState<string>('');
   const [customAmount, setCustomAmount] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<string>('');
-  const [donorInfo, setDonorInfo] = useState({
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [donorInfo, setDonorInfo] = useState<DonorInfo>({
     name: '',
     email: '',
     address: '',
@@ -29,6 +46,20 @@ const SupportUsPage = () => {
   });
 
   const predefinedAmounts = ['10', '25', '50', '100', '250'];
+
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      try {
+        const response = await donationApi.getPaymentMethods();
+        setPaymentMethods(response.data);
+      } catch (error) {
+        console.error('Error fetching payment methods:', error);
+        toast.error('Failed to load payment methods');
+      }
+    };
+
+    fetchPaymentMethods();
+  }, []);
 
   const handleAmountClick = (amount: string) => {
     setDonationAmount(amount);
@@ -74,34 +105,42 @@ const SupportUsPage = () => {
       return;
     }
 
-    try {
-      // In a real application, this would process the payment
-      // Simulating a payment process
-      console.log('Processing donation:', {
-        amount: donationAmount === 'custom' ? customAmount : donationAmount,
-        paymentMethod,
-        donorInfo,
-      });
+    if (!donorInfo.name || !donorInfo.email) {
+      toast.error('Please provide your name and email');
+      setIsLoading(false);
+      return;
+    }
 
-      // For demonstration, we'll just show a success message after a delay
-      setTimeout(() => {
-        toast.success('Thank you for your donation!');
-        setDonationAmount('');
-        setCustomAmount('');
-        setPaymentMethod('');
-        setDonorInfo({
-          name: '',
-          email: '',
-          address: '',
-          city: '',
-          country: '',
-          anonymous: false,
-        });
-        setIsLoading(false);
-      }, 1500);
+    try {
+      const donationData = {
+        donorName: donorInfo.name,
+        donorEmail: donorInfo.email,
+        amount: parseFloat(amount),
+        isAnonymous: donorInfo.anonymous,
+        notes: `Donation from ${donorInfo.name}`,
+        // Add payment method specific data if needed
+        ...(paymentMethod === 'mpesa' && { phoneNumber: '254712345678' })  // Example
+      };
+
+      const response = await donationApi.processDonation(donationData, paymentMethod);
+      console.log('Donation response:', response.data);
+
+      toast.success('Thank you for your donation!');
+      setDonationAmount('');
+      setCustomAmount('');
+      setPaymentMethod('');
+      setDonorInfo({
+        name: '',
+        email: '',
+        address: '',
+        city: '',
+        country: '',
+        anonymous: false,
+      });
     } catch (error) {
       console.error('Error processing donation:', error);
       toast.error('There was an error processing your donation. Please try again.');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -346,12 +385,14 @@ const SupportUsPage = () => {
             <div className="mb-6">
               <h3 className="mb-4">Select Payment Method</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                {['visa', 'mastercard', 'stripe', 'paypal', 'mpesa'].map((method) => (
+                {paymentMethods.map((method) => (
                   <div
-                    key={method}
-                    onClick={() => handlePaymentMethodSelect(method)}
-                    className={`flex flex-col items-center justify-center rounded-lg border p-4 cursor-pointer transition-all ${
-                      paymentMethod === method
+                    key={method.id}
+                    onClick={() => method.enabled && handlePaymentMethodSelect(method.id)}
+                    className={`flex flex-col items-center justify-center rounded-lg border p-4 ${
+                      !method.enabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer transition-all'
+                    } ${
+                      paymentMethod === method.id
                         ? 'border-primary bg-primary/10'
                         : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}
@@ -362,7 +403,7 @@ const SupportUsPage = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium capitalize">{method}</span>
+                    <span className="text-sm font-medium capitalize">{method.name}</span>
                   </div>
                 ))}
               </div>

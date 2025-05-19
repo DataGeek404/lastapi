@@ -13,14 +13,6 @@ const userValidationRules = {
   ]
 };
 
-const donationValidationRules = {
-  donation: [
-    check('amount', 'Amount is required and must be a number').isNumeric(),
-    check('donorInfo.name', 'Donor name is required').not().isEmpty(),
-    check('donorInfo.email', 'Please include a valid email').isEmail()
-  ]
-};
-
 const contactValidationRules = {
   contact: [
     check('name', 'Name is required').not().isEmpty(),
@@ -36,14 +28,22 @@ const joinUsValidationRules = {
     check('email', 'Please include a valid email').isEmail(),
     check('phone', 'Phone number is required').not().isEmpty(),
     check('role', 'Role is required').not().isEmpty(),
-    check('experience', 'Experience information is required').not().isEmpty(),
-    check('motivation', 'Motivation information is required').not().isEmpty()
+    check('experience', 'Experience is required').not().isEmpty(),
+    check('motivation', 'Motivation is required').not().isEmpty()
+  ]
+};
+
+const donationValidationRules = {
+  donation: [
+    check('donorName', 'Donor name is required').not().isEmpty(),
+    check('donorEmail', 'Please include a valid email').isEmail(),
+    check('amount', 'Amount must be a positive number').isFloat({ gt: 0 })
   ]
 };
 
 module.exports = {
   userValidationRules,
-  donationValidationRules,
   contactValidationRules,
-  joinUsValidationRules
+  joinUsValidationRules,
+  donationValidationRules
 };
