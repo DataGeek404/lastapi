@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/shared/Button';
@@ -22,6 +23,7 @@ interface DonorInfo {
   address: string;
   city: string;
   country: string;
+  phoneNumber: string;
   anonymous: boolean;
 }
 
@@ -46,6 +48,7 @@ const SupportUsPage = () => {
     address: '',
     city: '',
     country: '',
+    phoneNumber: '',
     anonymous: false,
   });
 
@@ -117,6 +120,13 @@ const SupportUsPage = () => {
       return;
     }
 
+    // Check if phone number is provided for M-Pesa payments
+    if (paymentMethod === 'mpesa' && !donorInfo.phoneNumber) {
+      toast.error('Please provide your phone number for M-Pesa payments');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const donationData = {
         donorName: donorInfo.name,
@@ -124,8 +134,8 @@ const SupportUsPage = () => {
         amount: parseFloat(amount),
         isAnonymous: donorInfo.anonymous,
         notes: `Donation from ${donorInfo.name}`,
-        // Add payment method specific data if needed
-        ...(paymentMethod === 'mpesa' && { phoneNumber: '254712345678' })  // Example
+        // Add phone number for M-Pesa payments
+        ...(paymentMethod === 'mpesa' && { phoneNumber: donorInfo.phoneNumber })
       };
 
       const response = await donationApi.processDonation(donationData, paymentMethod);
@@ -142,6 +152,7 @@ const SupportUsPage = () => {
         address: '',
         city: '',
         country: '',
+        phoneNumber: '',
         anonymous: false,
       });
     } catch (error) {
@@ -392,6 +403,25 @@ const SupportUsPage = () => {
                     />
                   </div>
                 </div>
+                
+                {paymentMethod === 'mpesa' && (
+                  <div>
+                    <label htmlFor="phoneNumber" className="mb-1 block text-sm font-medium">
+                      Phone Number* (for M-Pesa)
+                    </label>
+                    <input
+                      type="text"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      value={donorInfo.phoneNumber}
+                      onChange={handleDonorInfoChange}
+                      className="w-full rounded-md border border-input bg-background px-3 py-2"
+                      placeholder="e.g., 254712345678"
+                      required={paymentMethod === 'mpesa'}
+                    />
+                  </div>
+                )}
+                
                 <div className="flex items-center">
                   <input
                     type="checkbox"

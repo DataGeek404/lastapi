@@ -91,6 +91,14 @@ const processMpesaPayment = async (req, res) => {
   const { donorName, donorEmail, amount, phoneNumber, isAnonymous, notes, userId } = req.body;
 
   try {
+    // Check if phoneNumber is provided since it's required for M-Pesa
+    if (!phoneNumber) {
+      return res.status(400).json({ 
+        message: 'Phone number is required for M-Pesa payments',
+        errors: [{ msg: 'Phone number is required for M-Pesa payments' }]
+      });
+    }
+    
     // In a real scenario, you would integrate with M-Pesa API
     // For demonstration purposes, we'll simulate a successful transaction
     const transactionId = `mpesa-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -99,19 +107,19 @@ const processMpesaPayment = async (req, res) => {
     
     // Save donation record
     const [result] = await db.query(
-      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes]
+      'INSERT INTO donations (user_id, donor_name, donor_email, amount, payment_method, transaction_id, is_anonymous, notes, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [userId || null, donorName, donorEmail, amount, 'mpesa', transactionId, isAnonymous, notes, phoneNumber]
     );
     
     res.status(201).json({
       success: true,
       donationId: result.insertId,
       transactionId,
-      message: 'Payment initiated. Please complete the payment process.'
+      message: 'Payment initiated. Please check your phone to complete the M-Pesa payment.'
     });
   } catch (error) {
     console.error('M-Pesa payment error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'M-Pesa processing error: ' + (error.message || 'Unknown error') });
   }
 };
 
