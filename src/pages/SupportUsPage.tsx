@@ -1,7 +1,3 @@
-<think>
-
-</think>
-
 import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/shared/Button';
