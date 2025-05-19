@@ -93,19 +93,25 @@ const generateMpesaAccessToken = async () => {
     
     const auth = Buffer.from(`${consumer_key}:${consumer_secret}`).toString('base64');
     
-    // Use production URL instead of sandbox
-    const response = await axios.get(
-      'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
-      {
-        headers: {
-          Authorization: `Basic ${auth}`,
-        },
+    // Production URL for M-Pesa OAuth token
+    const response = await axios({
+      method: 'get',
+      url: 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Cache-Control': 'no-cache'
       }
-    );
+    });
     
+    if (!response.data || !response.data.access_token) {
+      console.error('Invalid M-Pesa token response:', response.data);
+      throw new Error('Failed to generate M-Pesa access token');
+    }
+    
+    console.log('M-Pesa token generated successfully');
     return response.data.access_token;
   } catch (error) {
-    console.error('Error generating M-Pesa access token:', error);
+    console.error('Error generating M-Pesa access token:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -156,6 +162,7 @@ const processMpesaPayment = async (req, res) => {
     
     // Initiate the actual M-Pesa STK Push in production
     try {
+      // Generate fresh token for each request
       const accessToken = await generateMpesaAccessToken();
       
       const shortcode = process.env.MPESA_SHORTCODE;
@@ -171,10 +178,22 @@ const processMpesaPayment = async (req, res) => {
       // Create password
       const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64');
       
+      // Set proper callback URL - using the FRONTEND_URL environment variable
+      // Make sure it ends with /api/mpesa/callback
+      const callbackUrl = `${process.env.FRONTEND_URL}/api/mpesa/callback`;
+      
+      console.log('Initiating M-Pesa STK push with token:', accessToken.substring(0, 10) + '...');
+      console.log('Using phone number:', formattedPhoneNumber);
+      
       // Make production STK push request - using production URL
-      const stkPushResponse = await axios.post(
-        'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
-        {
+      const stkPushResponse = await axios({
+        method: 'post',
+        url: 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        data: {
           BusinessShortCode: shortcode,
           Password: password,
           Timestamp: timestamp,
@@ -183,17 +202,11 @@ const processMpesaPayment = async (req, res) => {
           PartyA: formattedPhoneNumber,
           PartyB: shortcode,
           PhoneNumber: formattedPhoneNumber,
-          CallBackURL: `${process.env.FRONTEND_URL}/api/mpesa/callback`,
+          CallBackURL: callbackUrl,
           AccountReference: transactionId,
           TransactionDesc: `Donation from ${donorName}`
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          }
         }
-      );
+      });
       
       console.log('M-Pesa STK push response:', stkPushResponse.data);
       

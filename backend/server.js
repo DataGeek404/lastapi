@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -26,7 +27,8 @@ app.locals.db = pool;
 // CORS Configuration
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://192.168.0.105:8080'
+  'http://192.168.0.105:8080',
+  process.env.FRONTEND_URL
 ];
 
 app.use(cors({
@@ -35,7 +37,8 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('Origin not allowed:', origin);
+      callback(null, true); // Allow all origins for now in production
     }
   },
   credentials: true,
@@ -58,6 +61,12 @@ app.use('/api/join-us', joinUsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/payment-methods', paymentMethodRoutes);
+
+// Add a specific route for M-Pesa callbacks
+app.post('/api/mpesa/callback', (req, res) => {
+  console.log('M-Pesa callback received at root level:', req.body);
+  res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
+});
 
 // Base route for testing
 app.get('/', (req, res) => {
