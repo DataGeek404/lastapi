@@ -1,6 +1,7 @@
 
 const { validationResult } = require('express-validator');
 
+
 // @desc    Submit a join us application
 // @route   POST /api/join-us
 // @access  Public
