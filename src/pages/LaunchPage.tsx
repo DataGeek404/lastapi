@@ -1,162 +1,157 @@
-
-import React from 'react';
+import React, {useState} from 'react';
+import { motion } from 'framer-motion';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/shared/Button';
 import { Link } from 'react-router-dom';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { Carousel } from 'react-responsive-carousel';
+import { ProfileCard } from '@/components/shared/ProfileCard';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
+import launchVideo from '@/assets/vid1.mp4';
+import topImage from '@/assets/peeps2.jpg';
+import lowerImage from '@/assets/Rectangle 53.png';
+import { speakers } from '../../src/data/speakersData'
+import { panelists } from '../../src/data/panelists'
+import { LivedExperiencesPanel } from "../components/layout/LivedExperiencePanel";
+import { KeynoteSpeakers } from '../components/layout/KeynoteSpeakers';
+
 
 const LaunchPage = () => {
-  const launchSteps = [
-    {
-      title: 'Idea Development',
-      description: 'Refine your concept and develop a clear vision for your initiative.',
-      icon: (
-        <svg className="h-10 w-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Feasibility Assessment',
-      description: 'Evaluate the practical, financial, and logistical aspects of your project.',
-      icon: (
-        <svg className="h-10 w-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Strategic Planning',
-      description: 'Develop a comprehensive plan with clear goals, timelines, and resource requirements.',
-      icon: (
-        <svg className="h-10 w-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Resource Mobilization',
-      description: 'Secure the necessary funding, partnerships, and support for your initiative.',
-      icon: (
-        <svg className="h-10 w-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Implementation',
-      description: 'Launch your project with ongoing support and guidance from our team.',
-      icon: (
-        <svg className="h-10 w-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Monitoring & Growth',
-      description: 'Track progress, evaluate impact, and scale your initiative for maximum effect.',
-      icon: (
-        <svg className="h-10 w-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-    },
-  ];
-
-  const resources = [
-    {
-      title: 'Project Planning Toolkit',
-      description: 'A comprehensive guide to help you plan and structure your initiative.',
-    },
-    {
-      title: 'Funding Directory',
-      description: 'A curated list of potential funding sources for different types of projects.',
-    },
-    {
-      title: 'Mentorship Program',
-      description: 'Connect with experienced professionals who can guide your journey.',
-    },
-    {
-      title: 'Technical Assistance',
-      description: 'Access specialized expertise in areas such as technology, design, and evaluation.',
-    },
-  ];
-
   return (
     <>
-      <PageHeader 
-        title="Launch Your Initiative" 
+      {/* <PageHeader
+        title="Launch Your Initiative"
         subtitle="Get the support you need to bring your ideas to life and create positive change"
-      />
+      /> */}
 
-      <section className="section container-narrow">
-        <div className="mb-16">
-          <h2 className="mb-6 text-center">How It Works</h2>
-          <p className="mb-10 text-center text-lg text-muted-foreground">
-            Our launch program provides a structured pathway to help you develop, refine,
-            and implement your community initiative. Here's what the process looks like:
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {launchSteps.map((step, index) => (
-              <div key={index} className="rounded-lg border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="mb-4 flex justify-center">{step.icon}</div>
-                <h3 className="mb-2 text-center">{step.title}</h3>
-                <p className="text-center text-muted-foreground">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-16">
-          <h2 className="mb-6 text-center">Resources & Support</h2>
-          <p className="mb-10 text-center text-lg text-muted-foreground">
-            We offer a variety of resources and support services to help you at every stage of your journey.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {resources.map((resource, index) => (
-              <div key={index} className="rounded-lg bg-brand-50 p-6">
-                <h3 className="mb-2">{resource.title}</h3>
-                <p className="text-muted-foreground">{resource.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-16 rounded-lg bg-brand-100 p-8">
-          <h2 className="mb-4 text-center">Success Stories</h2>
-          <div className="mb-6">
-            <div className="rounded-lg bg-white p-6 shadow-sm">
-              <h3 className="mb-2">Community Garden Initiative</h3>
-              <p className="mb-4 text-muted-foreground">
-                "With the support of the Launch program, we were able to transform an abandoned lot
-                into a thriving community garden that now provides fresh produce for over 100 families
-                and serves as a gathering space for neighborhood events."
-              </p>
-              <p className="font-medium">- Maria Rodriguez, Project Leader</p>
+      {/* Launch Section */}
+      <div id="launch" className="w-full bg-white py-12 md:py-16">
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center"
+          >
+            <div className="md:pr-4 flex flex-col items-start">
+              <span className="text-[#31AC6E] text-5xl md:text-6xl font-bold">The</span>
+              <span className="text-[#31AC6E] text-5xl md:text-6xl font-bold">Launch</span>
             </div>
-          </div>
-          <div className="text-center">
-            <Button variant="outline">Read More Success Stories</Button>
-          </div>
+            <div className="md:pl-4 flex items-center">
+              <p className="text-gray-700 text-sm md:text-base leading-relaxed">
+                We launched a Symposium at the Cooperative University in Nairobi, Kenya, on 17th October 2024.
+                <br /><br />
+                This groundbreaking event—the first of its kind in Kenya and Africa—was themed <strong>“Lost Generation: Curse or Cause for Concern”</strong>, and brought together groups, organizations, professionals, and experts working on this issue.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex justify-center"
+          >
+            <div className="w-[300px] aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+              <video controls className="w-full h-full object-cover">
+                <source src={launchVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </motion.div>
         </div>
 
-        <div className="rounded-lg bg-brand-700 p-8 text-center text-white">
-          <h2 className="mb-4">Ready to Launch Your Initiative?</h2>
-          <p className="mb-6 mx-auto max-w-2xl">
-            Apply to our Launch program today and take the first step toward making your vision a reality.
-            Our team is ready to support you throughout your journey.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/join-us">
-              <Button className="bg-white text-brand-700 hover:bg-gray-100">Apply Now</Button>
-            </Link>
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-brand-700">
-              Schedule a Consultation
-            </Button>
+        <div className="w-full bg-[#31AC6E] mt-16 -mb-16">
+          <motion.img
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            src={topImage}
+            alt="Symposium event"
+            className="w-full h-auto max-h-[300px] md:max-h-[500px] object-cover object-center"
+          />
+
+          <div className="py-12"></div>
+
+          <div className="max-w-6xl mx-auto px-4 md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="grid md:grid-cols-2 gap-12 mb-16"
+            >
+              <div>
+                <h2 className="text-white text-3xl md:text-4xl font-bold mb-6">
+                  Objectives of the <br /> Symposium were :
+                </h2>
+                <img
+                  src={lowerImage}
+                  alt="Objectives visual"
+                  className="w-full h-auto rounded-lg shadow-lg mb-6"
+                />
+              </div>
+              <div className="flex items-center">
+                <p className="text-white text-sm md:text-base leading-relaxed">
+                  1. To convene stakeholders and lived experiences to share experiences 
+                  and articulate strategies for tackling this significant issue as a shared responsibility.
+                  <br /><br />
+                  2. Participants will identify gaps and collaborate to address the root 
+                  causes of illicit alcohol and drug abuse, learn from others providing support to those affected, 
+                  and ultimately work to reduce the prevalence of substance abuse in society.
+                  <br /><br />
+                  3. To build and strengthen cooperation among medical practitioners, community based
+                  programs, psychologists, mental health advocates, NGOs, and universities, encouraging continued 
+                  conversation on illicit alcohol and drug abuse/addiction and its effects to the community and 
+                  future generations.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="grid md:grid-cols-2 gap-12 pb-16"
+            >
+              <div>
+                <h2 className="text-white text-3xl md:text-4xl font-bold mb-4">
+                  Symposium Agenda <br /> & Highlights
+                </h2>
+                <p className="text-white text-sm md:text-base">
+                  The symposium featured engaging sessions and valuable discussions on substance abuse and its impact on society.
+                </p>
+              </div>
+              <div className="flex items-center">
+                <p className="text-white text-sm md:text-base leading-relaxed">
+                  Keynote Address by distinguished guests, setting the tone for the event.
+                  <br /><br />
+                  Presentation of Case Studies by NGOs, researchers, and medical professionals.
+                  <br /><br />
+                  Survivor Stories with personal narratives of overcoming addiction.
+                  <br /><br />
+                  Panel Discussions with audience interaction.
+                  <br /><br />
+                  Networking Opportunities to form lasting partnerships.
+                </p>
+              </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Keynote Speakers Section */}
+  <KeynoteSpeakers/>
+
+  <LivedExperiencesPanel />
+
     </>
   );
 };

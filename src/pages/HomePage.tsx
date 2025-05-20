@@ -41,8 +41,9 @@ const HomePage = () => {
     transition={{ duration: 0.8, ease: 'easeOut' }}
     viewport={{ once: true }}
   >
-    <div className="relative mx-auto -mt-32 mb-[-72px] max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
+    <div className="relative mx-auto -mt-32 mb-[-72px] max-w-7xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
       <video
+        controls
         autoPlay
         muted
         loop
@@ -116,7 +117,7 @@ const HomePage = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link to="/join-us">
-              <Button size="lg">Join Our Team</Button>
+              <Button size="lg">Join Us</Button>
             </Link>
             <Link to="/support-us">
               <Button variant="secondary" size="lg">

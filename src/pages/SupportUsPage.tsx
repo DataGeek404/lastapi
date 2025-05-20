@@ -208,10 +208,10 @@ const SupportUsPage = () => {
 
   return (
     <>
-      <PageHeader 
+      {/* <PageHeader 
         title="Support Our Mission" 
         subtitle="Your contribution helps us create lasting positive change in communities"
-      />
+      /> */}
 
       {/* M-Pesa Instructions Modal */}
       {showMpesaInstructions && (
@@ -244,6 +244,19 @@ const SupportUsPage = () => {
         <div className="mb-16">
           <h2 className="mb-6 text-center">Ways to Support</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div className="rounded-lg border bg-card p-6 shadow-sm text-center">
+              <svg className="mx-auto mb-4 h-12 w-12 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <h3 className="mb-2">Corporate Partnerships</h3>
+              <p className="mb-4 text-muted-foreground">
+                Partner with us to align your business goals with social impact and community engagement.
+              </p>
+              {/* <a href="#" className="text-primary font-medium hover:underline">
+                Learn More
+              </a> */}
+            </div>
             <div className="rounded-lg border bg-card p-6 shadow-sm text-center">
               <svg className="mx-auto mb-4 h-12 w-12 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -258,32 +271,20 @@ const SupportUsPage = () => {
             </div>
             <div className="rounded-lg border bg-card p-6 shadow-sm text-center">
               <svg className="mx-auto mb-4 h-12 w-12 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <h3 className="mb-2">Corporate Partnerships</h3>
-              <p className="mb-4 text-muted-foreground">
-                Partner with us to align your business goals with social impact and community engagement.
-              </p>
-              <a href="#" className="text-primary font-medium hover:underline">
-                Learn More
-              </a>
-            </div>
-            <div className="rounded-lg border bg-card p-6 shadow-sm text-center">
-              <svg className="mx-auto mb-4 h-12 w-12 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
               </svg>
               <h3 className="mb-2">In-Kind Donations</h3>
               <p className="mb-4 text-muted-foreground">
                 Contribute goods, services, or expertise that can support our programs and operations.
               </p>
-              <a href="#" className="text-primary font-medium hover:underline">
+              {/* <a href="#" className="text-primary font-medium hover:underline">
                 Contact Us
-              </a>
+              </a> */}
             </div>
           </div>
         </div>
 
-        <div className="mb-16">
+        {/* <div className="mb-16">
           <h2 className="mb-6 text-center">Your Impact</h2>
           <div className="space-y-6">
             <div className="rounded-lg bg-brand-50 p-6">
@@ -331,7 +332,7 @@ const SupportUsPage = () => {
               </ul>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div id="donate" className="scroll-mt-16">
           <h2 className="mb-8 text-center">Make a Donation</h2>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import PageHeader from '../../src/components/shared/PageHeader'; // Adjusted for React
 import whoWeAre from '../../src/assets/peeps.jpg';
@@ -6,6 +7,12 @@ import vision from '../../src/assets/IMG_9307.jpg';
 import director1 from '../../src/assets/Ellipse 10.png';
 import director2 from '../../src/assets/Ellipse 12.png';
 import director3 from '../../src/assets/Ellipse 11.png';
+import akidwa from '../../src/assets/Rectangle 29.png';
+import wezesha from '../../src/assets/Rectangle 27.png';
+import safety from '../../src/assets/Rectangle 28.png';
+import zen from '../../src/assets/Rectangle 40.png';
+import freedom from '../../src/assets/Logo 1.png';
+
 
 const AboutUsPage = () => {
   const teamMembers = [
@@ -37,10 +44,10 @@ const AboutUsPage = () => {
 
   return (
     <>
-      <PageHeader
+      {/* <PageHeader
         title="About Us"
         subtitle="Our story, mission, and the dedicated team behind our organization"
-      />
+      /> */}
 
       {/* WHO WE ARE */}
       <section className="py-12 bg-[#1D204B] text-white">
@@ -120,10 +127,10 @@ const AboutUsPage = () => {
           <h2 className="mb-10 text-center text-3xl font-bold text-[#31AC6E]">Board of Directors</h2>
 
           {/* Top Row: First and Second Director */}
-          <div className="flex justify-center gap-12 flex-wrap mb-12">
+          <div className="flex justify-center gap-20 flex-wrap mb-12">
             {/* First Director - Left */}
-            <div className="flex-1 max-w-xs flex flex-col items-center text-center">
-              <div className="mb-4 h-32 w-32 rounded-full border-4 border-[#31AC6E] overflow-hidden">
+            <div className="max-w-xs flex flex-col items-center text-center">
+              <div className="mb-4 h-36 w-36 md:h-40 md:w-40 rounded-full border-4 border-[#31AC6E] overflow-hidden">
                 <img src={teamMembers[0].image} alt={teamMembers[0].name} className="h-full w-full object-cover" />
               </div>
               <h4 className="mb-1 text-lg font-bold text-[#31AC6E]">{teamMembers[0].name}</h4>
@@ -131,8 +138,8 @@ const AboutUsPage = () => {
             </div>
 
             {/* Second Director - Right */}
-            <div className="flex-1 max-w-xs flex flex-col items-center text-center">
-              <div className="mb-4 h-32 w-32 rounded-full border-4 border-[#31AC6E] overflow-hidden">
+            <div className="max-w-xs flex flex-col items-center text-center">
+              <div className="mb-4 h-36 w-36 md:h-40 md:w-40 rounded-full border-4 border-[#31AC6E] overflow-hidden">
                 <img src={teamMembers[1].image} alt={teamMembers[1].name} className="h-full w-full object-cover" />
               </div>
               <h4 className="mb-1 text-lg font-bold text-[#31AC6E]">{teamMembers[1].name}</h4>
@@ -143,7 +150,7 @@ const AboutUsPage = () => {
           {/* Bottom Row: Center Director */}
           <div className="flex justify-center">
             <div className="flex flex-col items-center text-center max-w-xs">
-              <div className="mb-4 h-32 w-32 rounded-full border-4 border-[#31AC6E] overflow-hidden">
+              <div className="mb-4 h-36 w-36 md:h-40 md:w-40 rounded-full border-4 border-[#31AC6E] overflow-hidden">
                 <img src={teamMembers[2].image} alt={teamMembers[2].name} className="h-full w-full object-cover" />
               </div>
               <h4 className="mb-1 text-lg font-bold text-[#31AC6E]">{teamMembers[2].name}</h4>
@@ -153,6 +160,36 @@ const AboutUsPage = () => {
         </div>
       </section>
 
+      {/* Partners Section */}
+      <section className="w-full bg-white py-16">
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <h2 className="text-[#1D204B] text-3xl md:text-4xl font-bold text-center mb-16">
+            Our Partners
+          </h2>
+        </div>
+
+        <div
+          className="slider"
+          style={{
+            // These CSS variables are used in index.css for animations
+            ['--width' as any]: '200px',
+            ['--height' as any]: '100px',
+            ['--quantity' as any]: 10, // 5 partners repeated twice
+          }}
+        >
+          <div className="list">
+            {[akidwa, wezesha, safety, zen, freedom, akidwa, wezesha, safety, zen, freedom].map((logo, index) => (
+              <div
+                className="item"
+                key={index}
+                style={{ ['--position' as any]: index + 1 }}
+              >
+                <img src={logo} alt={`Partner ${index + 1}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
     </>
   );

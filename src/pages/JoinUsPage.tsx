@@ -3,7 +3,10 @@ import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/shared/Button';
 import { joinUsApi } from '@/services/api';
 import { useApp } from '@/contexts/AppContext';
+import DatePicker from 'react-datepicker';
 import { toast } from 'sonner';
+import bgForm from '../../src/assets/blaah.png'
+
 
 const JoinUsPage = () => {
   const { isLoading, setIsLoading } = useApp();
@@ -11,6 +14,9 @@ const JoinUsPage = () => {
     name: '',
     email: '',
     phone: '',
+    organization: '', // Added
+    selectedDate: null as Date | null, 
+    // organization:'',
     role: 'volunteer',
     experience: '',
     motivation: '',
@@ -20,10 +26,19 @@ const JoinUsPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    const handleDateChange = (date: Date | null) => {
+  setFormData((prev) => ({
+    ...prev,
+    selectedDate: date,
+  }));
+};
+
 
     try {
       await joinUsApi.submitApplication(formData);
@@ -34,6 +49,9 @@ const JoinUsPage = () => {
         name: '',
         email: '',
         phone: '',
+        organization: '', // Reset
+        selectedDate: null as Date | null,
+        // organization:'',
         role: 'volunteer',
         experience: '',
         motivation: '',
@@ -47,45 +65,45 @@ const JoinUsPage = () => {
   };
 
   const opportunities = [
-    {
-      title: 'Volunteer',
-      description: 'Contribute your time and skills to help with events, programs, and daily operations.',
-      commitment: 'Flexible, from a few hours per month to regular weekly involvement.',
-      requirements: 'Enthusiasm, reliability, and a commitment to our mission.',
-    },
-    {
-      title: 'Intern',
-      description: 'Gain valuable experience working directly with our team on specific projects and initiatives.',
-      commitment: 'Part-time or full-time positions available, typically 3-6 months.',
-      requirements: 'Currently enrolled in or recently graduated from a relevant academic program.',
-    },
-    {
-      title: 'Staff',
-      description: 'Join our team in a professional capacity to help drive our mission forward.',
-      commitment: 'Full-time and part-time positions based on organizational needs.',
-      requirements: 'Relevant experience and qualifications for the specific role.',
-    },
-    {
-      title: 'Partner',
-      description: 'Collaborate with us as an organization to create greater impact through combined efforts.',
-      commitment: 'Project-based or ongoing partnerships depending on goals and alignment.',
-      requirements: 'Shared values and complementary mission and resources.',
-    },
+    // {
+    //   title: 'Volunteer',
+    //   description: 'Contribute your time and skills to help with events, programs, and daily operations.',
+    //   commitment: 'Flexible, from a few hours per month to regular weekly involvement.',
+    //   requirements: 'Enthusiasm, reliability, and a commitment to our mission.',
+    // },
+    // {
+    //   title: 'Intern',
+    //   description: 'Gain valuable experience working directly with our team on specific projects and initiatives.',
+    //   commitment: 'Part-time or full-time positions available, typically 3-6 months.',
+    //   requirements: 'Currently enrolled in or recently graduated from a relevant academic program.',
+    // },
+    // {
+    //   title: 'Staff',
+    //   description: 'Join our team in a professional capacity to help drive our mission forward.',
+    //   commitment: 'Full-time and part-time positions based on organizational needs.',
+    //   requirements: 'Relevant experience and qualifications for the specific role.',
+    // },
+    // {
+    //   title: 'Partner',
+    //   description: 'Collaborate with us as an organization to create greater impact through combined efforts.',
+    //   commitment: 'Project-based or ongoing partnerships depending on goals and alignment.',
+    //   requirements: 'Shared values and complementary mission and resources.',
+    // },
   ];
 
   return (
     <>
-      <PageHeader 
-        title="Join Our Team" 
-        subtitle="Explore opportunities to contribute your talents and passion to our mission"
-      />
+      {/* <PageHeader 
+        title="Join US" 
+        subtitle="Explore opportunities to contribute to our mission"
+      /> */}
 
-      <section className="section container-narrow">
+      {/* <section className="section container-narrow">
         <div className="mb-16">
           <h2 className="mb-6 text-center">Opportunities to Get Involved</h2>
           <p className="mb-10 text-center text-lg text-muted-foreground">
-            We offer various ways to contribute to our mission, from volunteering to full-time roles.
-            Find the opportunity that best fits your interests, skills, and availability.
+            We offer various ways to contribute to our mission, from volunteering to partnership.
+            Find the opportunity that best fits your interests as we venture towards the a better future.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -107,7 +125,7 @@ const JoinUsPage = () => {
             ))}
           </div>
         </div>
-
+        
         <div className="mb-16">
           <h2 className="mb-6 text-center">Why Join Us?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -140,112 +158,130 @@ const JoinUsPage = () => {
             </div>
           </div>
         </div>
+      </section>   */}
 
-        <div>
-          <h2 className="mb-8 text-center">Apply to Join Us</h2>
-          <form onSubmit={handleSubmit} className="mx-auto max-w-2xl rounded-lg border bg-card p-6 shadow-sm">
-            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label htmlFor="name" className="mb-1 block text-sm font-medium">
-                  Full Name*
-                </label>
+      <section>      
+        <div className="relative w-full min-h-[600px] bg-cover bg-center" style={{ backgroundImage: `url(${bgForm})`, backgroundSize:'cover',backgroundPosition:'center'}}>
+          <div className="absolute inset-0 bg-black/40" /> {/* Optional dark overlay for better form contrast */}
+
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-center h-full px-4 md:px-16 py-10 gap-10">
+          {/* Left Content */}
+          <div className="text-white max-w-xl">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">
+              Be Part of the Change
+            </h2>
+            <p className="text-lg md:text-xl drop-shadow-md">
+              We believe in solutions built hand-in-hand with communities. Your collaboration can help us reach further and go deeper.
+            </p>
+          </div>
+            <form 
+              onSubmit={handleSubmit}
+              className="w-full max-w-xl bg-white bg-opacity-90 backdrop-blur-md p-6 rounded-lg shadow-lg"
+            >
+              <h2 className="mb-6 text-2xl font-semibold text-center text-gray-800">Apply to Join Us</h2>
+
+              <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">Full Name*</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-md border border-gray-300 px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">Email*</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-md border border-gray-300 px-3 py-2"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="phone" className="mb-1 block text-sm font-medium text-gray-700">Phone Number</label>
                 <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
                   onChange={handleChange}
-                  required
-                  className="w-full rounded-md border border-input bg-background px-3 py-2"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2"
                 />
               </div>
-              <div>
-                <label htmlFor="email" className="mb-1 block text-sm font-medium">
-                  Email*
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
+
+              <div className="mb-4 ">
+                <div>
+                  <label htmlFor="organization" className="mb-1 block text-sm font-medium text-gray-700">Organization/Company</label>
+                  <input
+                    type="text"
+                    id="organization"
+                    name="organization"
+                    value={formData.organization}
+                    onChange={handleChange}
+                    className="w-full rounded-md border border-gray-300 px-3 py-2"
+                  />
+                </div>
+                
+                {/* <div className="mb-4">
+                  <label htmlFor="date" className="mb-1 block text-sm font-medium text-gray-700">Preferred Date</label>
+                  <DatePicker
+                    selected={formData.selectedDate}
+                    onChange={handle}
+                    dateFormat="MMMM d, yyyy"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2"
+                    placeholderText="Select a date"
+                  />
+                </div> */}
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="role" className="mb-1 block text-sm font-medium text-gray-700">What Kind of support do you need?</label>
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-md border border-input bg-background px-3 py-2"
-                />
+                  className="w-full rounded-md border border-gray-300 px-3 py-2"
+                >
+                  <option value="volunteer">PREVENTIVE</option>
+                  <option value="intern">SUPPORTIVE</option>
+                  <option value="staff">TREATMENT</option>
+                  <option value="partner">TRAINING</option>
+                </select>
               </div>
-            </div>
 
-            <div className="mb-4">
-              <label htmlFor="phone" className="mb-1 block text-sm font-medium">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-              />
-            </div>
+              <div className="mb-6">
+                <label htmlFor="motivation" className="mb-1 block text-sm font-medium text-gray-700">Briefly describe your needs</label>
+                <textarea
+                  id="motivation"
+                  name="motivation"
+                  value={formData.motivation}
+                  onChange={handleChange}
+                  required
+                  rows={4}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2"
+                  placeholder="Describe your needs"
+                ></textarea>
+              </div>
 
-            <div className="mb-4">
-              <label htmlFor="role" className="mb-1 block text-sm font-medium">
-                I'm Interested In*
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                required
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-              >
-                <option value="volunteer">Volunteering</option>
-                <option value="intern">Internship</option>
-                <option value="staff">Staff Position</option>
-                <option value="partner">Partnership</option>
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="experience" className="mb-1 block text-sm font-medium">
-                Relevant Experience*
-              </label>
-              <textarea
-                id="experience"
-                name="experience"
-                value={formData.experience}
-                onChange={handleChange}
-                rows={3}
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-                placeholder="Briefly describe any relevant experience or qualifications"
-                required
-              ></textarea>
-            </div>
-
-            <div className="mb-6">
-              <label htmlFor="motivation" className="mb-1 block text-sm font-medium">
-                Why do you want to join us?*
-              </label>
-              <textarea
-                id="motivation"
-                name="motivation"
-                value={formData.motivation}
-                onChange={handleChange}
-                required
-                rows={4}
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-                placeholder="Tell us why you're interested in joining our organization and what you hope to contribute and gain"
-              ></textarea>
-            </div>
-
-            <div className="text-center">
-              <Button type="submit" size="lg" isLoading={isLoading}>
-                Submit Application
-              </Button>
-            </div>
-          </form>
+              <div className="text-center">
+                <Button type="submit" size="lg" isLoading={isLoading}>
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </section>
     </>
