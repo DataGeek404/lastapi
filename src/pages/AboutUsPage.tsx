@@ -1,56 +1,67 @@
-
 import React from 'react';
-import PageHeader from '@/components/shared/PageHeader';
+import PageHeader from '../../src/components/shared/PageHeader'; // Adjusted for React
+import whoWeAre from '../../src/assets/peeps.jpg';
+import mission from '../../src/assets/IMG_9282.jpg';
+import vision from '../../src/assets/IMG_9307.jpg';
+import director1 from '../../src/assets/Ellipse 10.png';
+import director2 from '../../src/assets/Ellipse 12.png';
+import director3 from '../../src/assets/Ellipse 11.png';
 
 const AboutUsPage = () => {
   const teamMembers = [
     {
-      name: 'Jane Doe',
-      position: 'Executive Director',
-      bio: 'Jane has over 15 years of experience in nonprofit leadership and community development.',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
+      name: 'Maryanne M. Karanja',
+      position: 'left',
+      bio: 'Co-Founder Africa Street Medicine Therapy. Counselling psychologist. Founder of Freedom Lounge. Musician. Marketer.',
+      image: director1,
     },
-    
     {
-      name: 'John Smith',
-      position: 'Program Director',
+      name: 'Joyce Igogo',
+      position: 'right',
       bio: 'John leads our program development and implementation efforts with a focus on sustainable impact.',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
+      image: director2,
     },
     {
-      name: 'Emily Johnson',
-      position: 'Community Outreach Manager',
+      name: 'Dr. Salome Mbugua Henry',
+      position: 'center',
       bio: 'Emily builds and maintains our relationships with community partners and stakeholders.',
-      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
+      image: director3,
     },
-    {
-      name: 'Michael Chen',
-      position: 'Research Director',
-      bio: 'Michael oversees our research initiatives and ensures our work is informed by the latest evidence.',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
-    },
+    // {
+    //   name: 'Michael Chen',
+    //   position: 'Research Director',
+    //   bio: 'Michael oversees our research initiatives and ensures our work is informed by the latest evidence.',
+    //   image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
+    // },
   ];
 
   return (
     <>
-      <PageHeader 
-        title="About Us" 
+      <PageHeader
+        title="About Us"
         subtitle="Our story, mission, and the dedicated team behind our organization"
       />
 
-      <section className="section container-narrow">
-        <div className="mb-16">
-          <h2 className="mb-6 text-center">Our Story</h2>
+      {/* WHO WE ARE */}
+      <section className="py-12 bg-[#1D204B] text-white">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-6 text-center text-3xl font-semibold">Who Are We</h2>
+          <img
+            src={whoWeAre}
+            alt="Who we are"
+            className="mx-auto mb-6 w-full max-w-3xl rounded-lg"
+          />
           <div className="space-y-4 text-lg">
             <p>
-              Founded in 2010, our organization began with a simple idea: that collective action and
-              innovative thinking could address some of the most pressing challenges facing our communities.
-              What started as a small group of passionate individuals has grown into a dynamic organization
-              with a global reach.
+              Street Medicine Africa (SMA) is a collaborative initiative tackling
+              illicit alcohol and substance abuse across Kenya and beyond. Launched
+              in 2024 under Wezesha, it brings together medical and mental health
+              professionals, NGOs, stakeholders, and educators to promote access to
+              preventive mental health and addiction care for marginalized and vulnerable communities.
             </p>
             <p>
-              Throughout our journey, we've remained committed to our core values of sustainability,
-              innovation, equity, and community engagement. These principles have guided our growth and
+              Throughout our journey, we've remained committed to our core values of equity
+              and community engagement. These principles have guided our growth and
               impact over the years.
             </p>
             <p>
@@ -60,67 +71,89 @@ const AboutUsPage = () => {
             </p>
           </div>
         </div>
+      </section>
 
-        <div className="mb-16">
-          <h2 className="mb-6 text-center">Our Mission & Vision</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-brand-50 p-6 rounded-lg">
-              <h3 className="mb-4 text-center">Mission</h3>
-              <p className="text-center">
-                To create sustainable, equitable communities through innovative solutions
-                and collaborative partnerships that empower individuals and strengthen social fabric.
-              </p>
-            </div>
-            <div className="bg-brand-50 p-6 rounded-lg">
-              <h3 className="mb-4 text-center">Vision</h3>
-              <p className="text-center">
+      {/* MISSION AND VISION */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 space-y-16">
+          {/* Vision First */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="order-2 md:order-1">
+              <h3 className="mb-4 text-4xl font-bold text-[#31AC6E]">Our Vision</h3>
+              <p className="text-lg">
                 A world where all communities are resilient, inclusive, and thriving,
                 with resources and opportunities accessible to everyone.
               </p>
             </div>
+            <div className="order-1 md:order-2">
+              <img
+                src={vision}
+                alt="Vision"
+                className="rounded-lg w-full h-64 object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Mission Second */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <img
+                src={mission}
+                alt="Mission"
+                className="rounded-lg w-full h-64 object-cover"
+              />
+            </div>
+            <div>
+              <h3 className="mb-4 text-4xl font-bold text-[#31AC6E]">Our Mission</h3>
+              <p className="text-lg">
+                To create sustainable, equitable communities through innovative solutions
+                and collaborative partnerships that empower individuals and strengthen the social fabric.
+              </p>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div>
-          <h2 className="mb-10 text-center">Our Team</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="flex flex-col items-center text-center">
-                <div className="mb-4 h-32 w-32 overflow-hidden rounded-full">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <h4 className="mb-1">{member.name}</h4>
-                <p className="mb-2 text-sm font-medium text-brand-600">{member.position}</p>
-                <p className="text-sm text-muted-foreground">{member.bio}</p>
+      {/* Board of Directors */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-10 text-center text-3xl font-bold text-[#31AC6E]">Board of Directors</h2>
+
+          {/* Top Row: First and Second Director */}
+          <div className="flex justify-center gap-12 flex-wrap mb-12">
+            {/* First Director - Left */}
+            <div className="flex-1 max-w-xs flex flex-col items-center text-center">
+              <div className="mb-4 h-32 w-32 rounded-full border-4 border-[#31AC6E] overflow-hidden">
+                <img src={teamMembers[0].image} alt={teamMembers[0].name} className="h-full w-full object-cover" />
               </div>
-            ))}
+              <h4 className="mb-1 text-lg font-bold text-[#31AC6E]">{teamMembers[0].name}</h4>
+              <p className="text-sm text-gray-600 text-justify">{teamMembers[0].bio}</p>
+            </div>
+
+            {/* Second Director - Right */}
+            <div className="flex-1 max-w-xs flex flex-col items-center text-center">
+              <div className="mb-4 h-32 w-32 rounded-full border-4 border-[#31AC6E] overflow-hidden">
+                <img src={teamMembers[1].image} alt={teamMembers[1].name} className="h-full w-full object-cover" />
+              </div>
+              <h4 className="mb-1 text-lg font-bold text-[#31AC6E]">{teamMembers[1].name}</h4>
+              <p className="text-sm text-gray-600 text-justify">{teamMembers[1].bio}</p>
+            </div>
+          </div>
+
+          {/* Bottom Row: Center Director */}
+          <div className="flex justify-center">
+            <div className="flex flex-col items-center text-center max-w-xs">
+              <div className="mb-4 h-32 w-32 rounded-full border-4 border-[#31AC6E] overflow-hidden">
+                <img src={teamMembers[2].image} alt={teamMembers[2].name} className="h-full w-full object-cover" />
+              </div>
+              <h4 className="mb-1 text-lg font-bold text-[#31AC6E]">{teamMembers[2].name}</h4>
+              <p className="text-sm text-gray-600 text-justify">{teamMembers[2].bio}</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="section bg-brand-800 text-white">
-        <div className="container-narrow text-center">
-          <h2 className="mb-6">Our Impact</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div>
-              <p className="mb-2 text-4xl font-bold">50+</p>
-              <p className="text-lg">Community Projects</p>
-            </div>
-            <div>
-              <p className="mb-2 text-4xl font-bold">10,000+</p>
-              <p className="text-lg">People Reached</p>
-            </div>
-            <div>
-              <p className="mb-2 text-4xl font-bold">25+</p>
-              <p className="text-lg">Partner Organizations</p>
-            </div>
-          </div>
-        </div>
-      </section>
+
     </>
   );
 };

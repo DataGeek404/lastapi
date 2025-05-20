@@ -1,184 +1,193 @@
-
 import React from 'react';
-import PageHeader from '@/components/shared/PageHeader';
+import { motion } from 'framer-motion';
+
+// Image imports (adjust path as needed)
+import doveImage from '../../src/assets/Group 7.png';
+import image1 from '../../src/assets/Rectangle 46.png';
+import image2 from '../../src/assets/Rectangle 47.png';
+import image3 from '../../src/assets/Rectangle 48.png';
+import image4 from '../../src/assets/Rectangle 21.png';
+import image5 from '../../src/assets/Rectangle 44.png';
+import image6 from '../../src/assets/Rectangle 45.png';
+import image7 from '../../src/assets/Rectangle 30.png';
+import image8 from '../../src/assets/Rectangle 31.png';
+import image9 from '../../src/assets/Rectangle 32.png';
 
 const ApproachPage = () => {
-  const methodologies = [
-    {
-      title: 'Research & Analysis',
-      description: 'We conduct thorough research to understand the root causes of challenges and identify effective solutions.',
-      steps: [
-        'Problem identification and scoping',
-        'Literature review and best practice analysis',
-        'Data collection and analysis',
-        'Synthesis of findings and recommendations',
-      ],
-    },
-    
-    {
-      title: 'Collaborative Design',
-      description: 'We work closely with communities and stakeholders to co-create solutions that meet real needs.',
-      steps: [
-        'Stakeholder mapping and engagement',
-        'Participatory workshops and design sessions',
-        'Prototype development and testing',
-        'Iterative refinement based on feedback',
-      ],
-    },
-    
-    {
-      title: 'Implementation & Support',
-      description: 'We provide resources, training, and ongoing support to ensure successful implementation.',
-      steps: [
-        'Resource mobilization and allocation',
-        'Capacity building and skills training',
-        'Phased implementation with regular check-ins',
-        'Troubleshooting and adaptive management',
-      ],
-    },
-    {
-      title: 'Monitoring & Evaluation',
-      description: 'We continuously monitor progress and evaluate outcomes to measure impact and inform improvements.',
-      steps: [
-        'Development of performance indicators',
-        'Data collection systems and protocols',
-        'Regular performance reviews',
-        'Impact assessment and reporting',
-      ],
-    },
-  ];
-
   return (
-    <>
-      <PageHeader 
-        title="Our Approach" 
-        subtitle="How we work to create sustainable, community-centered solutions"
-      />
+    <section className="w-full bg-[#1D204B] py-16 md:py-24 px-4">
+      <div className="max-w-6xl mx-auto relative mb-24">
 
-      <section className="section container-narrow">
-        <div className="mb-16">
-          <h2 className="mb-6 text-center">Our Methodology</h2>
-          <p className="mb-8 text-center text-lg text-muted-foreground">
-            We employ a systematic, evidence-based approach that empowers communities and
-            ensures sustainable outcomes. Our methodology combines rigorous research with
-            collaborative processes that center the voices and experiences of those we serve.
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#41B4E7] mb-4 px-4">
+            Community-Centered Approach
+          </h2>
+          <p className="text-white text-sm md:text-base max-w-2xl mx-auto px-4">
+            Tackling Substance Use Disorders in Vulnerable Populations<br />
+            Through Community-Centered Street Medicine in Kenya
           </p>
+        </motion.div>
 
-          <div className="space-y-12">
-            {methodologies.map((method, index) => (
-              <div key={index} className="rounded-lg border bg-card p-6 shadow-sm">
-                <h3 className="mb-2">{method.title}</h3>
-                <p className="mb-4 text-muted-foreground">{method.description}</p>
-                <div className="ml-4 border-l-2 border-brand-200 pl-4">
-                  <h4 className="mb-2 text-sm font-semibold text-muted-foreground">Key Steps:</h4>
-                  <ul className="space-y-1 text-sm">
-                    {method.steps.map((step, i) => (
-                      <li key={i} className="flex items-start">
-                        <span className="mr-2 mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand-500"></span>
-                        <span>{step}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Dove Divider */}
+        <div className="relative mb-8 w-screen -left-4 md:-left-8 lg:-left-[calc((100vw-100%)/2)] overflow-x-visible">
+          <img
+            src={doveImage}
+            alt="Peace dove"
+            className="absolute left-0 -translate-x-[15%] w-24 md:w-32 lg:-translate-x-[20px]"
+          />
+          <div className="mx-auto h-[2px] w-3/4 bg-gradient-to-r from-[#1D204B] via-[#40B4E7] to-[#1D204B]"></div>
         </div>
 
-        <div className="mb-16">
-          <h2 className="mb-6 text-center">Guiding Principles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="rounded-lg bg-brand-50 p-6">
-              <h3 className="mb-2">Community-Centered</h3>
-              <p className="text-muted-foreground">
-                We believe that effective solutions must be rooted in the knowledge, needs, and
-                aspirations of the communities we serve. We prioritize local leadership and ensure
-                that community members are active participants in all phases of our work.
-              </p>
-            </div>
-            <div className="rounded-lg bg-brand-50 p-6">
-              <h3 className="mb-2">Evidence-Based</h3>
-              <p className="text-muted-foreground">
-                Our initiatives are informed by rigorous research and data analysis. We continually
-                evaluate our work to measure impact and refine our approaches based on evidence
-                of what works.
-              </p>
-            </div>
-            <div className="rounded-lg bg-brand-50 p-6">
-              <h3 className="mb-2">Systems-Focused</h3>
-              <p className="text-muted-foreground">
-                We recognize that social challenges are often the result of complex, interconnected
-                systems. Our approach addresses root causes and works to transform the underlying
-                structures that perpetuate problems.
-              </p>
-            </div>
-            <div className="rounded-lg bg-brand-50 p-6">
-              <h3 className="mb-2">Adaptive & Iterative</h3>
-              <p className="text-muted-foreground">
-                We embrace flexibility and continuous learning. Our approach allows for
-                experimentation, feedback, and adjustment as we implement solutions in
-                dynamic and evolving contexts.
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Statistic Text */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="text-white text-3xl md:text-4xl lg:text-5xl text-center mb-12 max-w-6xl mx-auto py-6 md:py-8 lg:py-10 px-4"
+        >
+          Substance use disorders (SUDs) in Kenya are a growing national crisis, affecting an estimated<br />
+          <span className="text-[#41B4E7] font-bold">4.7 million people aged 15–65</span>.
+        </motion.p>
 
-        <div>
-          <h2 className="mb-6 text-center">Our Theory of Change</h2>
-          <div className="overflow-hidden rounded-lg bg-white p-6 shadow-sm">
-            <p className="mb-6 text-muted-foreground">
-              Our theory of change maps out how our activities lead to our desired outcomes and
-              long-term impact. It serves as a roadmap for our work and a framework for measuring
-              our progress.
+        <div className="mx-auto h-[2px] w-3/4 bg-gradient-to-r from-[#1D204B] via-[#40B4E7] to-[#1D204B] mb-16"></div>
+
+        {/* Main Text */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-white max-w-6xl mx-auto space-y-6"
+        >
+          <p className="py-6 md:py-8 lg:py-10 text-justify px-4">
+            The consequences are particularly acute for teenagers and youth, women and children, and the elderly, all of whom face layered
+            vulnerabilities and social exclusion due to substance abuse and limited access to support. We find that the men have more alcohol and substance use dependency and addiction compared to women.
+            <br /><br />
+            Teenagers and youth are among the hardest hit. Many drop out of school due to addiction, while others are incarcerated for drug-related offenses, including peddling and theft. Street Medicine
+            Africa intervenes directly in these high-risk settings by providing psychoeducation, individual assessments, and counseling to incarcerated boys and girls.
+            <br /><br />
+            The peer pressure on drug abuse in school is on the rise. We partner with educators for drug abuse prevention campaigns in schools.
+            <br /><br />
+            These youths often have no access to therapeutic services or educational pathways. Through partnerships with sponsors and well-wishers, Street Medicine Africa facilitates their
+            reintegration into formal education upon release, offering them a second chance at life and learning.
+          </p>
+        </motion.div>
+
+        {/* Images Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row gap-6 justify-center mt-6 px-4"
+        >
+          <div className="flex flex-col md:flex-row gap-6 justify-center">
+            <img src={image1} alt="img1" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+            <img src={image2} alt="img2" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+            <img src={image3} alt="img3" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="mx-auto h-[2px] w-full bg-gradient-to-r from-[#1D204B] via-[#40B4E7] to-[#1D204B] mb-16"></div>
+
+        {/* Content Block 2 */}
+        <div className="mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-white max-w-6xl mx-auto space-y-6"
+          >
+            <p className="py-6 md:py-8 lg:py-10 text-justify px-4">
+              Women and children face additional layers of harm—women affected by substance use and addiction
+              are more susceptible to exploitation, gender based violence, domestic abuse, rape and transactional sex,
+              while children growing up in such environments endure neglect, violence and long-term emotional and psychological
+              trauma. Africa Street Medicine Therapy and partners visit the women and children in marginalized areas affected.
+              We psycho educate them on matters drugs and substance use, mental health, self-value, legal rights, children’s rights.
+              We offer group therapy sessions, interpersonal therapy sessions, and offer economic empowerment.
             </p>
-            
-            <div className="relative">
-              <div className="absolute top-0 bottom-0 left-16 sm:left-24 border-l-2 border-dashed border-brand-300"></div>
-              
-              <div className="mb-8 ml-24 sm:ml-32">
-                <div className="absolute left-12 sm:left-20 -mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-white">1</div>
-                <h4 className="mb-2">Inputs</h4>
-                <p className="text-sm text-muted-foreground">
-                  Resources, expertise, partnerships, and community engagement that fuel our work.
-                </p>
-              </div>
-              
-              <div className="mb-8 ml-24 sm:ml-32">
-                <div className="absolute left-12 sm:left-20 -mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-white">2</div>
-                <h4 className="mb-2">Activities</h4>
-                <p className="text-sm text-muted-foreground">
-                  Research, collaborative design, capacity building, and implementation support.
-                </p>
-              </div>
-              
-              <div className="mb-8 ml-24 sm:ml-32">
-                <div className="absolute left-12 sm:left-20 -mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-white">3</div>
-                <h4 className="mb-2">Outputs</h4>
-                <p className="text-sm text-muted-foreground">
-                  Trained individuals, implemented programs, developed resources, and established systems.
-                </p>
-              </div>
-              
-              <div className="mb-8 ml-24 sm:ml-32">
-                <div className="absolute left-12 sm:left-20 -mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-white">4</div>
-                <h4 className="mb-2">Outcomes</h4>
-                <p className="text-sm text-muted-foreground">
-                  Changes in knowledge, attitudes, behaviors, and practices among individuals and communities.
-                </p>
-              </div>
-              
-              <div className="ml-24 sm:ml-32">
-                <div className="absolute left-12 sm:left-20 -mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-white">5</div>
-                <h4 className="mb-2">Impact</h4>
-                <p className="text-sm text-muted-foreground">
-                  Long-term, sustainable improvements in community well-being, resilience, and equity.
-                </p>
-              </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="max-w-6xl mx-auto px-4 mt-6"
+          >
+            <div className="flex flex-col md:flex-row gap-6 justify-center">
+              <img src={image4} alt="Content 4" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+              <img src={image5} alt="Content 5" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+              <img src={image6} alt="Content 6" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
-    </>
+
+        <div className="mx-auto h-[2px] w-full bg-gradient-to-r from-[#1D204B] via-[#40B4E7] to-[#1D204B] mb-16"></div>
+
+        {/* Content Block 3 */}
+        <div className="mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-white max-w-6xl mx-auto space-y-6"
+          >
+            <p className="py-6 md:py-8 lg:py-10 text-justify px-4">
+              Men are most hit by alcohol addiction and substance use in Kenya. Africa Street Therapy Medicine partners with
+              stakeholders and volunteer groups to offer HIV, diabetes, blood pressure tests and counseling, psychoeducative
+              sessions, psychiatry visits, holistic therapy treatment, and food.
+              <br /><br />
+              The elderly, frequently forgotten in addiction care strategies, grapple with isolation and misuse of prescription
+              drugs, compounded by mobility and access challenges. Africa Street Therapy Medicine works with partners,
+              stakeholders and volunteers where we visit the elderly to offer therapy and support in affected marginalized homes.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="max-w-6xl mx-auto px-4 mt-6"
+          >
+            <div className="flex flex-col md:flex-row gap-6 justify-center">
+              <img src={image7} alt="Content 7" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+              <img src={image8} alt="Content 8" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+              <img src={image9} alt="Content 9" className="w-full md:w-1/3 h-70 object-cover rounded-[10%]" />
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="mx-auto h-[2px] w-full bg-gradient-to-r from-[#1D204B] via-[#40B4E7] to-[#1D204B] mb-16"></div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="mb-24"
+        >
+          <div className="text-white max-w-6xl mx-auto space-y-6">
+            <p className="py-6 md:py-8 lg:py-10 text-justify px-4">
+              Africa Street Therapy Medicine is registered under Street Medicine Institute and proposes a holistic,
+              innovative response modeled on successful street medicine approaches developed in Ireland and other
+              global street medicine programs.
+            </p>
+          </div>
+        </motion.div>
+    </section>
   );
 };
 
