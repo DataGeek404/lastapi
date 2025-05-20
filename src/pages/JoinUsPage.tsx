@@ -261,6 +261,22 @@ const JoinUsPage = () => {
                 </select>
               </div>
 
+              <div className="mb-4">
+              <label htmlFor="experience" className="mb-1 block text-sm font-medium">
+                Relevant Experience*
+              </label>
+              <textarea
+                id="experience"
+                name="experience"
+                value={formData.experience}
+                onChange={handleChange}
+                rows={3}
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
+                placeholder="Briefly describe any relevant experience or qualifications"
+                required
+              ></textarea>
+            </div> 
+
               <div className="mb-6">
                 <label htmlFor="motivation" className="mb-1 block text-sm font-medium text-gray-700">Briefly describe your needs</label>
                 <textarea
