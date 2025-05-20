@@ -14,8 +14,8 @@ const JoinUsPage = () => {
     name: '',
     email: '',
     phone: '',
-    organization: '', // Added
-    selectedDate: null as Date | null, 
+    // organization: '', // Added
+    // selectedDate: null as Date | null, 
     // organization:'',
     role: 'volunteer',
     experience: '',
@@ -49,8 +49,8 @@ const JoinUsPage = () => {
         name: '',
         email: '',
         phone: '',
-        organization: '', // Reset
-        selectedDate: null as Date | null,
+        // organization: '', // Reset
+        // selectedDate: null as Date | null,
         // organization:'',
         role: 'volunteer',
         experience: '',
@@ -219,7 +219,7 @@ const JoinUsPage = () => {
                 />
               </div>
 
-              <div className="mb-4 ">
+              {/* <div className="mb-4 ">
                 <div>
                   <label htmlFor="organization" className="mb-1 block text-sm font-medium text-gray-700">Organization/Company</label>
                   <input
@@ -232,7 +232,7 @@ const JoinUsPage = () => {
                   />
                 </div>
                 
-                {/* <div className="mb-4">
+                <div className="mb-4">
                   <label htmlFor="date" className="mb-1 block text-sm font-medium text-gray-700">Preferred Date</label>
                   <DatePicker
                     selected={formData.selectedDate}
@@ -241,8 +241,8 @@ const JoinUsPage = () => {
                     className="w-full rounded-md border border-gray-300 px-3 py-2"
                     placeholderText="Select a date"
                   />
-                </div> */}
-              </div>
+                </div>
+              </div> */}
 
               <div className="mb-4">
                 <label htmlFor="role" className="mb-1 block text-sm font-medium text-gray-700">What Kind of support do you need?</label>
