@@ -4,10 +4,9 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
-  server: {
-    allowedHosts: [
-      'https://africanstreettherapymedicine-pxxyx.ondigitalocean.app'
-    ]
+  server:{
+    host: "0.0.0.0",  // Listen on all interfaces
+    port: 8080        // Match the readiness probe
   },
 
   plugins: [
