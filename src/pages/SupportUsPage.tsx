@@ -11,7 +11,7 @@ export default function MpesaForm() {
       transition={{ duration: 0.4 }}
     >
       <img
-        src="./src/assetsScreenshot from 2025-05-22 14-53-50.png/"
+        src="./src/assets/Screenshot from 2025-05-22 14-53-50.png"
         alt="MPESA Donation QR Code"
         className="w-64 h-64 object-contain"
       />
