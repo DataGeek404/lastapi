@@ -212,8 +212,9 @@ const SupportUsPage = () => {
         title="Support Our Mission" 
         subtitle="Your contribution helps us create lasting positive change in communities"
       /> */}
+    
 
-      {/* M-Pesa Instructions Modal */}
+      {/* M-Pesa Instructions Modal 
       {showMpesaInstructions && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
@@ -239,6 +240,7 @@ const SupportUsPage = () => {
           </div>
         </div>
       )}
+      */}
 
       <section className="section container-narrow">
         <div className="mb-16">
