@@ -5,8 +5,9 @@ import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "::",   // Accepts all IPv6 connections (or use "0.0.0.0" for IPv4)
-    port: 8080,
+    allowedHosts: [
+      'africanstreettherapymedicine-pxxyx.ondigitalocean.app'
+    ]
   },
 
   plugins: [
