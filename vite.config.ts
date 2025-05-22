@@ -3,12 +3,10 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "::",
+    host: "::",   // Accepts all IPv6 connections (or use "0.0.0.0" for IPv4)
     port: 8080,
-    allowedHosts: "africanstreettherapymedicine-pxxyx.ondigitalocean.app", // ✅ Allow all hosts
   },
 
   plugins: [
