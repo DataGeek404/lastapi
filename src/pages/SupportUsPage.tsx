@@ -28,7 +28,7 @@ export default function SupportSection() {
           {/* Right Side (QR Code) */}
           <div className="flex justify-center">
             <img
-              src="./src/assets/Screenshot from 2025-05-22 14-53-50.png"
+              src="/mpesa-qr.png"
               alt="MPESA Donation QR Code"
               className="w-64 h-64 object-contain"
             />
