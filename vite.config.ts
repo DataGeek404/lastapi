@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: "all", // ✅ Allow all hosts
+    allowedHosts: "africanstreettherapymedicine-pxxyx.ondigitalocean.app", // ✅ Allow all hosts
   },
 
   plugins: [
